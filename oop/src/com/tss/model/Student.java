@@ -7,16 +7,12 @@ public class Student {
     private double feesPaid;
     private double totalFees;
 
-    public Student(int id, String name, String course, double feesPaid, double totalFees) {
-        this.id = id;
-        this.name = name;
-        this.course = course;
-        this.feesPaid = feesPaid;
-        this.totalFees = totalFees;
-    }
+    public Student() {}
 
-    public void setId(int id) {
+    public boolean setId(int id) {
+        if (id <= 0) return false;
         this.id = id;
+        return true;
     }
 
     public int getId() {
@@ -55,12 +51,20 @@ public class Student {
         return totalFees;
     }
 
-    public void payFees(double amount) {
-        this.feesPaid = this.feesPaid + amount;
-    }
-
     public double getPenddingFees() {
         return this.totalFees - this.feesPaid;
+    }
+
+    public boolean payFees(double amount) {
+        if (amount > this.getPenddingFees()) {
+            System.out.println("Amount is greater than pending fees.");
+            return false;
+        } else if (amount <= 0) {
+            System.out.println("Amount must be greater than 0.");
+            return false;
+        }
+        this.feesPaid = this.feesPaid + amount;
+        return true;
     }
 
     @Override
