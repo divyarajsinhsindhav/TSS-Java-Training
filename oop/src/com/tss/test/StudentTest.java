@@ -7,17 +7,29 @@ import java.util.Scanner;
 public class StudentTest {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter Student ID");
-        int id = scanner.nextInt();
-        System.out.println("Enter Student Name");
-        String name = scanner.next();
-        System.out.println("Enter Student Course");
-        String course = scanner.next();
-        System.out.println("Enter fees currently paid: ");
+        Student student1 = new Student();
+        while(true) {
+            System.out.print("Enter Student ID: ");
+            int id = scanner.nextInt();
+            scanner.nextLine();
+            if (student1.setId(id)) break;
+        }
+
+        System.out.print("\nEnter Student Name: ");
+        String name = scanner.nextLine();
+        student1.setName(name);
+
+        System.out.print("\nEnter Student Course: ");
+        String course = scanner.nextLine();
+        student1.setCourse(course);
+
+        System.out.print("\nEnter fees currently paid: ");
         double feesPaid = scanner.nextDouble();
-        System.out.println("Enter total fees: ");
+        student1.setFeesPaid(feesPaid);
+
+        System.out.print("\nEnter total fees: ");
         double totalFees = scanner.nextDouble();
-        Student student1 = new Student(id, name, course, feesPaid, totalFees);
+        student1.setTotalFees(totalFees);
 
         while(true) {
             System.out.println("======================================");
@@ -33,9 +45,12 @@ public class StudentTest {
                     System.out.println(student1.toString());
                     break;
                 case 2:
-                    System.out.println("Enter amount you want to paid: ");
-                    double amount = scanner.nextDouble();
-                    student1.payFees(amount);
+                    System.out.println("Pending fees: " + student1.getPenddingFees());
+                    while(true) {
+                        System.out.println("Enter amount you want to paid: ");
+                        double amount = scanner.nextDouble();
+                        if (student1.payFees(amount)) break;
+                    }
                     break;
                 case 3:
                     System.out.println("Pending fees: " + student1.getPenddingFees());
