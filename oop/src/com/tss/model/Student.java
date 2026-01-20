@@ -3,16 +3,14 @@ package com.tss.model;
 public class Student {
     private int id;
     private String name;
-    private String course;
+    private Course[] courses = new Course[3];
     private double feesPaid;
     private double totalFees;
 
     public Student() {}
 
-    public boolean setId(int id) {
-        if (id <= 0) return false;
+    public void setId(int id) {
         this.id = id;
-        return true;
     }
 
     public int getId() {
@@ -27,12 +25,20 @@ public class Student {
         return name;
     }
 
-    public void setCourse(String course) {
-        this.course = course;
+    public void setCourse(Course[] courses) {
+        this.courses = courses;
+        calculateTotalFee();
     }
 
-    public String getCourse() {
-        return course;
+    public Course[] getCourses() {
+        return courses;
+    }
+
+    private void calculateTotalFee() {
+        totalFees = 0;
+        for (Course c: courses) {
+            totalFees += c.getFees();
+        }
     }
 
     public void setFeesPaid(double feesPaid) {
@@ -67,12 +73,54 @@ public class Student {
         return true;
     }
 
+    public boolean addCourse(Course course) {
+        for (int i = 0; i < courses.length; i++) {
+            if (courses[i] != null && courses[i].getId() == course.getId()) {
+                System.out.println("Course already added to student.");
+                return false;
+            }
+        }
+
+        for (int i = 0; i < courses.length; i++) {
+            if (courses[i] == null) {
+                courses[i] = course;
+                totalFees += course.getFees(); // update total fees
+                return true;
+            }
+        }
+
+        System.out.println("Student course limit reached.");
+        return false;
+    }
+
+    public void recalculateTotalFees() {
+        totalFees = 0;
+        for (Course c : courses) {
+            if (c != null) {
+                totalFees += c.getFees();
+            }
+        }
+    }
+
     @Override
     public String toString() {
-        return "Student ID: " + this.id +
-                "\nStudent name: " + this.name +
-                "\nStudent Course: " + this.course +
-                "\nFees Paid: " + this.feesPaid +
-                "\nTotal Fees: " + this.totalFees;
+
+        StringBuilder courseDetails = new StringBuilder();
+
+        for (Course c : courses) {
+            if (c != null) {
+                courseDetails.append(c.getName())
+                        .append(" (Fee: ")
+                        .append(c.getFees())
+                        .append(")\n");
+            }
+        }
+
+        return "Student ID: " + id +
+                "\nStudent Name: " + name +
+                "\nStudent Courses:\n" + courseDetails +
+                "\nFees Paid: " + feesPaid +
+                "\nTotal Fees: " + totalFees;
     }
+
 }
