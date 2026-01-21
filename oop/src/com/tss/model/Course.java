@@ -4,6 +4,7 @@ public class Course {
     private int id;
     private String name;
     private double fees;
+    private double paidFees;
     private int duration;
 
     public Course() {}
@@ -24,26 +25,39 @@ public class Course {
         this.duration = duration;
     }
 
+    public void setPaidFees(double paidFees) {
+        this.paidFees = paidFees;
+    }
+
     public int getId() {
-        return id;
+        return this.id;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public double getFees() {
-        return fees;
+        return this.fees;
     }
 
     public int getDuration() {
-        return duration;
+        return this.duration;
+    }
+
+    public double getPaidFees() {
+        return this.paidFees;
+    }
+
+    public double getPenddingFees() {
+        return this.fees - this.paidFees;
     }
 
     public String toString() {
         return "Course Id: " + this.id +
                 "\nCourse Name: " + this.name +
                 "\nCourse Fees: " + this.fees +
+                "\nPaid Fees: " + this.paidFees +
                 "\nCourse Duration: " + this.duration;
     }
 }

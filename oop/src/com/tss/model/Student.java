@@ -61,16 +61,26 @@ public class Student {
         return this.totalFees - this.feesPaid;
     }
 
-    public boolean payFees(double amount) {
-        if (amount > this.getPenddingFees()) {
-            System.out.println("Amount is greater than pending fees.");
-            return false;
-        } else if (amount <= 0) {
+    public boolean payFees(double amount, Course[] course, int courseId) {
+
+        if (amount <= 0) {
             System.out.println("Amount must be greater than 0.");
             return false;
         }
-        this.feesPaid = this.feesPaid + amount;
-        return true;
+
+        for (int i = 0; i < course.length; i++) {
+            if (courses[i] != null && courses[i].getId() == courseId) {
+                if (amount > courses[i].getPenddingFees()) {
+                    System.out.println("Amount is greater than pending fees.");
+                    return false;
+                }
+                courses[i].setPaidFees(courses[i].getPaidFees()+amount);
+                this.feesPaid = this.feesPaid + amount;
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public boolean addCourse(Course course) {

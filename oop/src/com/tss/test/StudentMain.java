@@ -47,11 +47,11 @@ public class StudentMain {
             System.out.println("\n1. Add new Student" +
                     "\n2. Add new course" +
                     "\n3. Display single student" +
-                    "\n4. Display all student" +
+                    "\n4. Display all students" +
                     "\n5. Pay Fees" +
                     "\n6. Pending Fees" +
-                    "\n7. Display all course" +
-                    "\n8. Update Course" +
+                    "\n7. Display all courses" +
+                    "\n8. Assign course to student" +
                     "\n9. Exit");
             int userChoice;
             do {
@@ -70,105 +70,22 @@ public class StudentMain {
                     addCourse();
                     break;
                 case 3:
-                    System.out.println("Which student data you want to see? ");
-                    studentId = scanner.nextInt();
-                    student = getStudentById(studentId);
-                    if (student == null) {
-                        System.out.println("No student found");
-                        break;
-                    }
-                    System.out.println(student);
+                    displaySingleStudent();
                     break;
                 case 4:
                     displayAllStudents();
                     break;
                 case 5:
-                    if (countOfStudent == 0) {
-                        System.out.println("0 students available");
-                        break;
-                    }
-
-                    System.out.println("For which student you want to pay fees? ");
-                    studentId = scanner.nextInt();
-
-                    student = getStudentById(studentId);
-                    if (student == null) {
-                        System.out.println("No student with given id is available");
-                        break;
-                    }
-
-                    System.out.println("Pending fees: " + student.getPenddingFees());
-                    System.out.println("How much fees you want to pay? ");
-                    double feesAmount = scanner.nextDouble();
-                    if (student.payFees(feesAmount)) {
-                        System.out.println("Remaining Pending Fees: " + student.getPenddingFees());
-                    }
+                    payFees();
                     break;
                 case 6:
-                    if (countOfStudent == 0) {
-                        System.out.println("0 students available");
-                        break;
-                    }
-
-                    System.out.println("For which student you want to see pending fees? ");
-                    studentId = scanner.nextInt();
-
-                    student = getStudentById(studentId);
-                    if (student == null) {
-                        System.out.println("No student with given id is available");
-                        break;
-                    }
-
-                    System.out.println("Pending fees: " + student.getPenddingFees());
+                    pendingFees();
                     break;
                 case 7:
                     displayAllCourses();
                     break;
                 case 8:
-                    if (countOfCourse == 0) {
-                        System.out.println("No courses available to update.");
-                        return;
-                    }
-
-                    System.out.print("Enter Course ID to update: ");
-                    int courseId = scanner.nextInt();
-
-                    Course course = getCourseById(courseId);
-
-                    if (course == null) {
-                        System.out.println("Course not found.");
-                        return;
-                    }
-
-                    scanner.nextLine();
-
-                    System.out.println("Current Course Details:");
-                    System.out.println(course);
-
-                    System.out.print("Enter new Course Name (press Enter to keep same): ");
-                    String name = scanner.nextLine();
-                    if (!name.isBlank()) {
-                        course.setName(name);
-                    }
-
-                    System.out.print("Enter new Course Fees (0 to keep same): ");
-                    int fees = scanner.nextInt();
-                    if (fees > 0) {
-                        course.setFees(fees);
-                    }
-
-                    for (int i = 0; i < countOfStudent; i++) {
-                        students[i].recalculateTotalFees();
-                    }
-
-
-                    System.out.print("Enter new Course Duration (0 to keep same): ");
-                    int duration = scanner.nextInt();
-                    if (duration > 0) {
-                        course.setDuration(duration);
-                    }
-
-                    System.out.println("Course updated successfully!");
+                    assignCourse();
                     break;
                 case 9:
                     return;
@@ -233,9 +150,9 @@ public class StudentMain {
 
         System.out.println("Total Fees: " + students[countOfStudent].getTotalFees());
 
-        System.out.print("\nFees you want to pay now: ");
-        double payFees = scanner.nextInt();
-        students[countOfStudent].setFeesPaid(payFees);
+//        System.out.print("\nFees you want to pay now: ");
+//        double payFees = scanner.nextInt();
+//        students[countOfStudent].setFeesPaid(payFees);
 
         countOfStudent++;
     }
@@ -251,7 +168,6 @@ public class StudentMain {
         int courseId = genrateUniqueCourseId(courses, countOfCourse);
         courses[countOfCourse].setId(courseId);
         System.out.println("Generated Course ID: " + courseId);
-
 
         scanner.nextLine();
         System.out.print("Enter Course Name: ");
@@ -390,20 +306,84 @@ public class StudentMain {
         return id;
     }
 
-    //TODO
-    private static void assignCourse(int id) {
+    private static void assignCourse() {
 
     }
 
-    private static void payFees(int id) {
+    private static void payFees() {
+        if (countOfStudent == 0) {
+            System.out.println("0 students available");
+            return;
+        }
+
+        System.out.println("For which student you want to pay fees? ");
+        int studentId = scanner.nextInt();
+
+        Student student = getStudentById(studentId);
+        if (student == null) {
+            System.out.println("No student with given id is available");
+            return;
+        }
+
+        Course[] studentEnrolledCourse = student.getCourses();
+
+        if (studentEnrolledCourse.length == 0) {
+            System.out.println("Student is not enrolled in any course.");
+            return;
+        }
+
+        for (Course value : studentEnrolledCourse) {
+            if (value == null) break;
+            System.out.println(value.getId() + ". " + value.getName() + " (Pending fees: " + value.getPenddingFees() + ")");
+        }
+
+        System.out.println("For which course you want to pay fees? ");
+        int courseId = scanner.nextInt();
+        System.out.println("How much fees you want to pay? ");
+        double feesAmount = scanner.nextDouble();
+
+        if (student.payFees(feesAmount, studentEnrolledCourse, courseId)) {
+            System.out.println("Remaining Pending Fees: " + student.getPenddingFees());
+        }
+    }
+
+    private static void pendingFees() {
+        if (countOfStudent == 0) {
+            System.out.println("0 students available");
+            return;
+        }
+
+        System.out.println("For which student you want to pay fees? ");
+        int studentId = scanner.nextInt();
+
+        Student student = getStudentById(studentId);
+        if (student == null) {
+            System.out.println("No student with given id is available");
+            return;
+        }
+
+        Course[] studentEnrolledCourse = student.getCourses();
+
+        if (studentEnrolledCourse.length == 0) {
+            System.out.println("Student is not enrolled in any course.");
+            return;
+        }
+
+        for (Course value : studentEnrolledCourse) {
+            if (value == null) break;
+            System.out.println(value.getId() + ". " + value.getName() + " (Pending fees: " + value.getPenddingFees() + ")");
+        }
 
     }
 
-    private static void pendingFees(int id) {
-
-    }
-
-    private static void displaySingleStudent(int id) {
-
+    private static void displaySingleStudent() {
+        System.out.println("Which student data you want to see? ");
+        int studentId = scanner.nextInt();
+        Student student = getStudentById(studentId);
+        if (student == null) {
+            System.out.println("No student found");
+            return;
+        }
+        System.out.println(student);
     }
 }
