@@ -40,8 +40,7 @@ public class StudentMain {
 
         courses = new Course[numberOfCourse];
 
-        int studentId;
-        Student student;
+
 
         while(true) {
             System.out.println("\n1. Add new Student" +
@@ -265,7 +264,6 @@ public class StudentMain {
         System.out.println("---------------------------------------------------------------");
     }
 
-
     private static int generateUniqueStudentId(Student[] students, int count) {
         Random random = new Random();
         int id;
@@ -308,6 +306,68 @@ public class StudentMain {
 
     private static void assignCourse() {
 
+        if (countOfStudent == 0) {
+            System.out.println("No students available.");
+            return;
+        }
+
+        if (countOfCourse == 0) {
+            System.out.println("No courses available.");
+            return;
+        }
+
+        System.out.print("Enter Student ID: ");
+        int studentId = scanner.nextInt();
+
+        Student student = getStudentById(studentId);
+        if (student == null) {
+            System.out.println("Student not found.");
+            return;
+        }
+
+        Course[] studentCourses = student.getCourses();
+        int assignedCount = 0;
+        for (Course c : studentCourses) {
+            if (c != null) assignedCount++;
+        }
+
+        if (assignedCount == 3) {
+            System.out.println("Student already has maximum 3 courses.");
+            return;
+        }
+
+        System.out.println("Available Courses:");
+        for (int i = 0; i < countOfCourse; i++) {
+            System.out.println(courses[i].getId() + ". " + courses[i].getName());
+        }
+
+        int remainingSlots = 3 - assignedCount;
+        System.out.println("You can assign up to " + remainingSlots + " more course");
+        System.out.println("Enter 0 to stop assigning");
+
+        for (int i = 0; i < remainingSlots; i++) {
+            System.out.print("Enter Course ID: ");
+            int courseId = scanner.nextInt();
+
+            if (courseId == 0) {
+                break;
+            }
+
+            Course course = getCourseById(courseId);
+            if (course == null) {
+                System.out.println("Invalid course ID.");
+                i--;
+                continue;
+            }
+
+            boolean added = student.addCourse(course);
+            if (!added) {
+                i--;
+            }
+        }
+
+        System.out.println("Courses assigned successfully.");
+        System.out.println("Updated Total Fees: " + student.getTotalFees());
     }
 
     private static void payFees() {
