@@ -168,10 +168,17 @@ public class StudentMain {
         courses[countOfCourse].setId(courseId);
         System.out.println("Generated Course ID: " + courseId);
 
-        scanner.nextLine();
-        System.out.print("Enter Course Name: ");
-        String courseName = scanner.nextLine();
-        courses[countOfCourse].setName(courseName);
+        while (true) {
+            scanner.nextLine();
+            System.out.print("Enter Course Name: ");
+            String courseName = scanner.nextLine();
+            if(getCourseByName(courseName) != null) {
+                System.out.println("Course with " + courseName + " already available.");
+                continue;
+            }
+            courses[countOfCourse].setName(courseName);
+            break;
+        }
 
         System.out.print("Enter Course Fees: ");
         double courseFees = scanner.nextDouble();
@@ -196,6 +203,17 @@ public class StudentMain {
     private static Course getCourseById(int id) {
         for (int i = 0; i < countOfCourse; i++) {
             if (courses[i].getId() == id) {
+                return courses[i];
+            }
+        }
+        return null;
+    }
+
+    private static Course getCourseByName(String courseName) {
+        String tempCourseName;
+        for (int i = 0; i < countOfCourse; i++) {
+            tempCourseName = courses[i].getName().trim().replaceAll(" ", "").toLowerCase();
+            if (tempCourseName.equals(courseName.trim().replaceAll(" ", "").toLowerCase())) {
                 return courses[i];
             }
         }
@@ -413,7 +431,7 @@ public class StudentMain {
             return;
         }
 
-        System.out.println("For which student you want to pay fees? ");
+        System.out.println("For which student you want to see pending fees? ");
         int studentId = scanner.nextInt();
 
         Student student = getStudentById(studentId);

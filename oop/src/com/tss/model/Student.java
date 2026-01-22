@@ -103,14 +103,14 @@ public class Student {
         return false;
     }
 
-    public void recalculateTotalFees() {
-        totalFees = 0;
-        for (Course c : courses) {
-            if (c != null) {
-                totalFees += c.getFees();
-            }
-        }
-    }
+//    public void recalculateTotalFees() {
+//        totalFees = 0;
+//        for (Course c : courses) {
+//            if (c != null) {
+//                totalFees += c.getFees();
+//            }
+//        }
+//    }
 
     @Override
     public String toString() {
