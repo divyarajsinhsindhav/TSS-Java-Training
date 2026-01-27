@@ -3,7 +3,7 @@ package com.tss.model;
 public class CurrentAccount extends Account{
     private final static double MINIMUM_BALANCE = 500.0;
     public CurrentAccount(String name, double balance) {
-        super(name, balance);
+        super(name, balance, AccountType.CURRENT);
     }
 
     public static double getMINIMUM_BALANCE() {

@@ -6,12 +6,14 @@ public class Account {
     protected int accountNumber;
     protected String name;
     protected double balance;
+    protected AccountType accountType;
 
-    public Account(String name, double balance) {
+    public Account(String name, double balance, AccountType accountType) {
         this.id = accountCounter;
         this.accountNumber = accountCounter+1000;
         this.name = name;
         this.balance = balance;
+        this.accountType = accountType;
         accountCounter++;
     }
 
@@ -55,5 +57,33 @@ public class Account {
         } else {
             System.out.println("Insufficient balance");
         }
+    }
+
+    public void transferMoney(Account receiver, double amount) {
+        if (receiver == null) {
+            System.out.println("Receiver account not found");
+            return;
+        }
+        if (this == receiver) {
+            System.out.println("Self transfer service is not available");
+            return;
+        }
+
+        if (amount <= 0) {
+            System.out.println("Invalid transfer amount.");
+            return;
+        }
+
+        double initialBalance = this.getBalance();
+
+        this.withdraw(amount);
+
+        if (this.getBalance() == initialBalance) {
+            System.out.println("Transfer failed due to insufficient balance");
+            return;
+        }
+
+        receiver.deposit(amount);
+        System.out.println("Transfer successful");
     }
 }

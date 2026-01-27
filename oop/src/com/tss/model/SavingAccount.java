@@ -3,7 +3,7 @@ package com.tss.model;
 public class SavingAccount extends Account{
     private final double offerRate;
     public SavingAccount(String name, double balance, double offerRate) {
-        super(name, balance);
+        super(name, balance, AccountType.SAVING);
         this.offerRate = offerRate;
     }
 
