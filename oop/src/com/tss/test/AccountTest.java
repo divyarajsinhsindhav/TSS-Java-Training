@@ -156,6 +156,11 @@ public class AccountTest {
         Account sender = findAccountByAccountNumber(senderAcc);
         Account receiver = findAccountByAccountNumber(receiverAcc);
 
+        if (sender == receiver) {
+            System.out.println("Self transfer service is not available");
+            return;
+        }
+
         if (sender != null && receiver != null) {
             System.out.print("Enter amount to transfer: ");
             double amount = scanner.nextDouble();

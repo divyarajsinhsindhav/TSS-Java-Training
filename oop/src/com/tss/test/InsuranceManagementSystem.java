@@ -78,18 +78,15 @@ public class InsuranceManagementSystem {
         if (type == 1) {
             System.out.print("Is policy matured? (true/false): ");
             boolean matured = scanner.nextBoolean();
-            policies[policiesCount++] =
-                    new LifeInsurancePolicy(number, name, sum, duration, matured);
+            policies[policiesCount++] = new LifeInsurancePolicy(number, name, sum, duration, matured);
         }
         else if (type == 2) {
-            policies[policiesCount++] =
-                    new HealthInsurancePolicy(number, name, sum, duration);
+            policies[policiesCount++] = new HealthInsurancePolicy(number, name, sum, duration);
         }
         else if (type == 3) {
             System.out.print("Is policy active? (true/false): ");
             boolean active = scanner.nextBoolean();
-            policies[policiesCount++] =
-                    new VehicleInsurancePolicy(number, name, sum, duration, active);
+            policies[policiesCount++] = new VehicleInsurancePolicy(number, name, sum, duration, active);
         }
         else {
             System.out.println("Invalid policy type!");

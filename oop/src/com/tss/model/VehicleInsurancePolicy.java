@@ -11,7 +11,7 @@ public class VehicleInsurancePolicy extends InsurancePolicy {
 
     @Override
     public double calculatePremium() {
-        return sumAssured * RATE * duration;
+        return sumAssured * RATE;
     }
 
     @Override
