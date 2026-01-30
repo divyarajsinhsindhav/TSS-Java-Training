@@ -1,9 +1,14 @@
 package com.tss.model;
 
+import com.tss.Exception.MinimumBalanceException;
+
 public class CurrentAccount extends Account{
     private final static double MINIMUM_BALANCE = 500.0;
     public CurrentAccount(String name, double balance) {
         super(name, balance, AccountType.CURRENT);
+        if (balance < MINIMUM_BALANCE) {
+            throw new MinimumBalanceException(MINIMUM_BALANCE);
+        }
     }
 
     public static double getMINIMUM_BALANCE() {
@@ -11,12 +16,12 @@ public class CurrentAccount extends Account{
     }
 
     @Override
-    public void withdraw(double amount) {
+    public void withdraw(double amount){
         if (balance - amount >= MINIMUM_BALANCE) {
             balance -= amount;
             System.out.println("Amount Withdrawn: " + amount);
         } else {
-            System.out.println("Minimum balance " + MINIMUM_BALANCE + " must need to be maintain");
+            throw new MinimumBalanceException(MINIMUM_BALANCE);
         }
     }
 }

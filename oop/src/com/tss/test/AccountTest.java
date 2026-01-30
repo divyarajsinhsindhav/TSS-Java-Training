@@ -1,5 +1,7 @@
 package com.tss.test;
 
+import com.tss.Exception.MinimumBalanceException;
+import com.tss.Exception.NegativeNumberException;
 import com.tss.model.Account;
 import com.tss.model.CurrentAccount;
 import com.tss.model.SavingAccount;
@@ -24,6 +26,10 @@ public class AccountTest {
             System.out.print("Enter choice: ");
 
             int choice = scanner.nextInt();
+
+            if (choice < 0) {
+                throw new NegativeNumberException(choice);
+            }
 
             switch (choice) {
 
@@ -78,10 +84,21 @@ public class AccountTest {
             System.out.print("Enter offer rate: ");
             double offerRate = scanner.nextDouble();
 
-            account = new SavingAccount(name, balance, offerRate);
-
+            try {
+                account = new SavingAccount(name, balance, offerRate);
+            } catch (NegativeNumberException e) {
+                System.out.println(e.getMessage());
+                return;
+            }
         } else if (type == 2) {
-            account = new CurrentAccount(name, CurrentAccount.getMINIMUM_BALANCE());
+            System.out.print("Enter initial balance: ");
+            double balance = scanner.nextDouble();
+            try {
+                account = new CurrentAccount(name, balance);
+            } catch(NegativeNumberException | MinimumBalanceException e) {
+                System.out.println(e.getMessage());
+                return;
+            }
         } else {
             System.out.println("Invalid account type");
             return;
@@ -94,6 +111,9 @@ public class AccountTest {
     }
 
     public static Account findAccountByAccountNumber(int accountNo) {
+        if (accountNo < 0) {
+            throw new NegativeNumberException(accountNo);
+        }
         for (int i = 0; i < count; i++) {
             if (accounts[i].getAccountNumber() == accountNo) {
                 return accounts[i];
@@ -106,7 +126,9 @@ public class AccountTest {
     public static void performDeposit() {
         System.out.print("Enter account number: ");
         int accountNo = scanner.nextInt();
-
+        if (accountNo < 0) {
+            throw new NegativeNumberException(accountNo);
+        }
         Account account = findAccountByAccountNumber(accountNo);
 
         if (account != null) {
@@ -127,7 +149,11 @@ public class AccountTest {
         if (account != null) {
             System.out.print("Enter amount to withdraw: ");
             double amount = scanner.nextDouble();
-            account.withdraw(amount);
+            try {
+                account.withdraw(amount);
+            } catch (NegativeNumberException | MinimumBalanceException e) {
+                System.out.println(e.getMessage());
+            }
         } else {
             System.out.println("Account not found");
         }

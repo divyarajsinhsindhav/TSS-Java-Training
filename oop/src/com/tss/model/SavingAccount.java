@@ -1,5 +1,7 @@
 package com.tss.model;
 
+import com.tss.Exception.NegativeNumberException;
+
 public class SavingAccount extends Account{
     private final double offerRate;
     public SavingAccount(String name, double balance, double offerRate) {
@@ -13,6 +15,9 @@ public class SavingAccount extends Account{
 
     @Override
     public void deposit(double amount) {
+        if (amount < 0) {
+            throw new NegativeNumberException(amount);
+        }
         super.deposit(amount);
 
         if (amount > 50000) {

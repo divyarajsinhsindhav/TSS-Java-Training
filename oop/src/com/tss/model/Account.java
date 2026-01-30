@@ -1,5 +1,7 @@
 package com.tss.model;
 
+import com.tss.Exception.NegativeNumberException;
+
 public class Account {
     private static int accountCounter = 1;
     protected int id;
@@ -12,6 +14,9 @@ public class Account {
         this.id = accountCounter;
         this.accountNumber = accountCounter+1000;
         this.name = name;
+        if (balance < 0) {
+            throw new NegativeNumberException(balance);
+        }
         this.balance = balance;
         this.accountType = accountType;
         accountCounter++;
@@ -46,11 +51,14 @@ public class Account {
             balance += amount;
             System.out.println("Amount deposited: " + amount);
         } else {
-            System.out.println("Invalid deposit amount");
+            throw new NegativeNumberException(amount);
         }
     }
 
     public void withdraw(double amount) {
+        if (amount < 0) {
+            throw new NegativeNumberException(amount);
+        }
         if (amount > 0 && amount <= balance) {
             balance -= amount;
             System.out.println("Amount withdrawn: " + amount);
