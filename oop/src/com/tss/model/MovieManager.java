@@ -86,4 +86,12 @@ public class MovieManager implements Serializable {
         saveMovies();
         currentMovieCount = 0;
     }
+
+    public void deleteSingleMovie(int id) throws IOException, ClassNotFoundException {
+        File file = new File(filePath);
+        List<Movie> tempMovies = new ArrayList<>();
+        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
+        tempMovies = (List<Movie>) ois.readObject();
+
+    }
 }

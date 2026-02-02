@@ -17,7 +17,8 @@ public class MovieController {
                 1. Display Movies
                 2. Add Movies
                 3. Delete All Movies
-                4. Exit
+                4. Update movie
+                5. Exit
                 """);
             System.out.println("Enter Your choice: ");
             int userChoice = scanner.nextInt();
@@ -33,6 +34,9 @@ public class MovieController {
                     manager.deleteAllMovies();
                     break;
                 case 4:
+                    setMovieDetails();
+                    break;
+                case 5:
                     return;
                 default:
                     System.out.println("Please enter valid choice");
@@ -79,6 +83,40 @@ public class MovieController {
 
     private void setMovieDetails() {
         System.out.println("Enter movie Id: ");
+        int id = scanner.nextInt();
 
+        Movie movie = getMovieById(id);
+
+        if (movie != null) {
+            System.out.println(movie);
+
+            scanner.nextLine();
+            System.out.println("\nUpdate Name: ");
+            String name = scanner.nextLine();
+
+            System.out.println("Update Year: ");
+            int year = scanner.nextInt();
+
+            scanner.nextLine();
+            System.out.println("Update genre: ");
+            String genre = scanner.nextLine();
+
+            movie.setName(name);
+            movie.setYear(year);
+            movie.setGenre(genre);
+
+            manager.saveMovies();
+        }
+    }
+
+    public void deleteSingleMovie() {
+        System.out.println("Enter movie Id: ");
+        int id = scanner.nextInt();
+
+        Movie movie = getMovieById(id);
+
+        if (movie != null) {
+
+        }
     }
 }
