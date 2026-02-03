@@ -1,6 +1,7 @@
 package com.tss.model;
 
 import com.tss.Exception.CapacityFullException;
+import com.tss.Exception.NoSuchMovieFoundException;
 
 import java.util.Scanner;
 
@@ -28,13 +29,21 @@ public class MovieController {
                     displayMovies();
                     break;
                 case 2:
-                    addMovies();
+                    try {
+                        addMovies();
+                    } catch (CapacityFullException e) {
+                        System.out.println(e.getMessage());
+                    }
                     break;
                 case 3:
                     manager.deleteAllMovies();
                     break;
                 case 4:
-                    setMovieDetails();
+                    try {
+                        setMovieDetails();
+                    } catch (NoSuchMovieFoundException e) {
+                        System.out.println(e.getMessage());
+                    }
                     break;
                 case 5:
                     return;
@@ -45,21 +54,22 @@ public class MovieController {
     }
 
     private void addMovies() {
-        if (MovieManager.MAX_MOVIE_COUNT == manager.getMovies().size()) {
-            throw new CapacityFullException();
+        try {
+            System.out.println("Enter id");
+            int id = scanner.nextInt();
+            scanner.nextLine();
+            System.out.println("Enter name: ");
+            String name = scanner.nextLine();
+            System.out.println("Enter release year: ");
+            int year = scanner.nextInt();
+            scanner.nextLine();
+            System.out.println("Enter genre: ");
+            String genre = scanner.nextLine();
+            Movie movie = new Movie(id, name, year, genre);
+            manager.addMovie(movie);
+        } catch (CapacityFullException e) {
+            System.out.println(e.getMessage());
         }
-        System.out.println("Enter id");
-        int id = scanner.nextInt();
-        scanner.nextLine();
-        System.out.println("Enter name: ");
-        String name = scanner.nextLine();
-        System.out.println("Enter release year: ");
-        int year = scanner.nextInt();
-        scanner.nextLine();
-        System.out.println("Enter genre: ");
-        String genre = scanner.nextLine();
-        Movie movie = new Movie(id, name, year, genre);
-        manager.addMovie(movie);
     }
 
     private Movie getMovieById(int id) {
@@ -87,26 +97,28 @@ public class MovieController {
 
         Movie movie = getMovieById(id);
 
-        if (movie != null) {
-            System.out.println(movie);
-
-            scanner.nextLine();
-            System.out.println("\nUpdate Name: ");
-            String name = scanner.nextLine();
-
-            System.out.println("Update Year: ");
-            int year = scanner.nextInt();
-
-            scanner.nextLine();
-            System.out.println("Update genre: ");
-            String genre = scanner.nextLine();
-
-            movie.setName(name);
-            movie.setYear(year);
-            movie.setGenre(genre);
-
-            manager.saveMovies();
+        if (movie == null) {
+            throw new NoSuchMovieFoundException();
         }
+
+        System.out.println(movie);
+
+        scanner.nextLine();
+        System.out.println("\nUpdate Name: ");
+        String name = scanner.nextLine();
+
+        System.out.println("Update Year: ");
+        int year = scanner.nextInt();
+
+        scanner.nextLine();
+        System.out.println("Update genre: ");
+        String genre = scanner.nextLine();
+
+        movie.setName(name);
+        movie.setYear(year);
+        movie.setGenre(genre);
+
+        manager.saveMovies();
     }
 
     public void deleteSingleMovie() {
@@ -116,7 +128,7 @@ public class MovieController {
         Movie movie = getMovieById(id);
 
         if (movie != null) {
-
+            //TODO
         }
     }
 }

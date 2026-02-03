@@ -27,8 +27,6 @@ public class MovieManager implements Serializable {
             movies.add(movie);
             currentMovieCount++;
             saveMovies();
-        } else {
-            throw new NullPointerException();
         }
     }
 
