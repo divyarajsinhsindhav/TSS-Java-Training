@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class MovieManager implements Serializable {
+public class MovieManager{
     List<Movie> movies;
     final static int MAX_MOVIE_COUNT = 5;
     private static int currentMovieCount = 0;

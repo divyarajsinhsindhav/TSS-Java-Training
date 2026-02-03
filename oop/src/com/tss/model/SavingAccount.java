@@ -4,8 +4,8 @@ import com.tss.Exception.NegativeNumberException;
 
 public class SavingAccount extends Account{
     private final double offerRate;
-    public SavingAccount(String name, double balance, double offerRate) {
-        super(name, balance, AccountType.SAVING);
+    public SavingAccount(String name, double balance, int accountNumber,double offerRate) {
+        super(name, balance, accountNumber, AccountType.SAVING);
         this.offerRate = offerRate;
     }
 

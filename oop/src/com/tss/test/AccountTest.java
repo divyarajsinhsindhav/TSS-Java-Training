@@ -5,31 +5,32 @@ import com.tss.Exception.NegativeNumberException;
 import com.tss.model.Account;
 import com.tss.model.CurrentAccount;
 import com.tss.model.SavingAccount;
+import com.tss.model.Transaction;
+import com.tss.utils.InputValidation;
 
-import java.util.Scanner;
+import java.util.*;
+
+import static com.tss.test.StudentMain.scanner;
 
 public class AccountTest {
 
-    private static Scanner scanner = new Scanner(System.in);
-    private static Account[] accounts = new Account[5];
-    private static int count = 0;
+    private static List<Account> accountList = new ArrayList<>();
+    private static final int MAX_ACCOUNT = 5;
 
     public static void main(String[] args) {
-
         while (true) {
             System.out.println("\n1. Create Account");
             System.out.println("2. Deposit");
             System.out.println("3. Withdraw");
             System.out.println("4. Show Balance");
             System.out.println("5. Transfer Money");
-            System.out.println("6. Exit");
-            System.out.print("Enter choice: ");
+            System.out.println("6. Display all accounts");
+            System.out.println("7. Display account");
+            System.out.println("8. Delete Account");
+            System.out.println("9. Display Transactions");
+            System.out.println("10. Exit");
 
-            int choice = scanner.nextInt();
-
-            if (choice < 0) {
-                throw new NegativeNumberException(choice);
-            }
+            int choice = InputValidation.readInt("Enter choice: ", 1, 10);
 
             switch (choice) {
 
@@ -48,10 +49,28 @@ public class AccountTest {
                 case 4:
                     showBalance();
                     break;
+
                 case 5:
                     transferMoney();
                     break;
+
                 case 6:
+                    displayAllAccounts();
+                    break;
+
+                case 7:
+                    displayAccount();
+                    break;
+
+                case 8:
+                    deleteAccount();
+                    break;
+
+                case 9:
+                    displayTransactions();
+                    break;
+
+                case 10:
                     return;
 
                 default:
@@ -62,39 +81,33 @@ public class AccountTest {
 
     public static void createAccount() {
 
-        if (count >= accounts.length) {
+        if (accountList.size() >= MAX_ACCOUNT) {
             System.out.println("Account limit reached!");
             return;
         }
 
         System.out.println("1. Savings Account");
         System.out.println("2. Current Account");
-        System.out.print("Select account type: ");
-        int type = scanner.nextInt();
+        int type = InputValidation.readInt("Select account type: ", 1, 2);
+        scanner.nextLine();
+        String name = InputValidation.readName("Enter account holder name: ");
 
-        System.out.print("Enter account holder name: ");
-        String name = scanner.next();
-
-        Account account = null;
-
+        Account account;
+        int accountNumber = genrateUniqueAccountNumber();
         if (type == 1) {
-            System.out.print("Enter initial balance: ");
-            double balance = scanner.nextDouble();
-
-            System.out.print("Enter offer rate: ");
-            double offerRate = scanner.nextDouble();
+            double balance = InputValidation.readDouble("Enter initial balance: ", 1);
+            double offerRate = InputValidation.readDouble("Enter offer rate: ", 1);
 
             try {
-                account = new SavingAccount(name, balance, offerRate);
+                account = new SavingAccount(name, balance, accountNumber, offerRate);
             } catch (NegativeNumberException e) {
                 System.out.println(e.getMessage());
                 return;
             }
         } else if (type == 2) {
-            System.out.print("Enter initial balance: ");
-            double balance = scanner.nextDouble();
+            double balance = InputValidation.readDouble("Enter initial balance: ", 1);
             try {
-                account = new CurrentAccount(name, balance);
+                account = new CurrentAccount(name, balance, accountNumber);
             } catch(NegativeNumberException | MinimumBalanceException e) {
                 System.out.println(e.getMessage());
                 return;
@@ -104,7 +117,7 @@ public class AccountTest {
             return;
         }
 
-        accounts[count++] = account;
+        accountList.add(account);
 
         System.out.println("Account created successfully");
         System.out.println("Account Number: " + account.getAccountNumber());
@@ -114,70 +127,61 @@ public class AccountTest {
         if (accountNo < 0) {
             throw new NegativeNumberException(accountNo);
         }
-        for (int i = 0; i < count; i++) {
-            if (accounts[i].getAccountNumber() == accountNo) {
-                return accounts[i];
+        for (int i = 0; i < accountList.size(); i++) {
+            Account tempAccount = accountList.get(i);
+            if (tempAccount.getAccountNumber() == accountNo) {
+                return tempAccount;
             }
         }
         return null;
     }
 
-
     public static void performDeposit() {
-        System.out.print("Enter account number: ");
-        int accountNo = scanner.nextInt();
-        if (accountNo < 0) {
-            throw new NegativeNumberException(accountNo);
-        }
+        int accountNo = InputValidation.readInt("Enter account number: ", 0);
         Account account = findAccountByAccountNumber(accountNo);
 
-        if (account != null) {
-            System.out.print("Enter amount to deposit: ");
-            double amount = scanner.nextDouble();
-            account.deposit(amount);
-        } else {
+        if (account == null) {
             System.out.println("Account not found");
+            return;
         }
+        double amount = InputValidation.readDouble("Enter amount to deposit: ", 0);
+        account.deposit(amount);
     }
 
     public static void performWithdraw() {
-        System.out.print("Enter account number: ");
-        int accNo = scanner.nextInt();
-
+        int accNo = InputValidation.readInt("Enter account number: ", 0);
         Account account = findAccountByAccountNumber(accNo);
 
-        if (account != null) {
-            System.out.print("Enter amount to withdraw: ");
-            double amount = scanner.nextDouble();
-            try {
-                account.withdraw(amount);
-            } catch (NegativeNumberException | MinimumBalanceException e) {
-                System.out.println(e.getMessage());
-            }
-        } else {
+        if (account == null) {
             System.out.println("Account not found");
+            return;
+        }
+
+        double amount = InputValidation.readDouble("Enter amount to withdraw: ", 0);
+        try {
+            account.withdraw(amount);
+        } catch (NegativeNumberException | MinimumBalanceException e) {
+            System.out.println(e.getMessage());
         }
     }
 
     public static void showBalance() {
-        System.out.print("Enter account number: ");
-        int accNo = scanner.nextInt();
-
+        int accNo = InputValidation.readInt("Enter account number: ", 0);
         Account account = findAccountByAccountNumber(accNo);
 
-        if (account != null) {
-            System.out.println("Current Balance: " + account.getBalance());
-        } else {
+        if (account == null) {
             System.out.println("Account not found");
+            return;
         }
+
+        System.out.println("Current Balance: " + account.getBalance());
     }
 
     public static void transferMoney() {
-        System.out.print("Enter sender account number: ");
-        int senderAcc = scanner.nextInt();
-
-        System.out.print("Enter receiver account number: ");
-        int receiverAcc = scanner.nextInt();
+        displayAccountNumbers();
+        System.out.println();
+        int senderAcc = InputValidation.readInt("Enter sender account number: ", 0);
+        int receiverAcc = InputValidation.readInt("Enter receiver account number: ", 0);
 
         Account sender = findAccountByAccountNumber(senderAcc);
         Account receiver = findAccountByAccountNumber(receiverAcc);
@@ -187,12 +191,128 @@ public class AccountTest {
             return;
         }
 
-        if (sender != null && receiver != null) {
-            System.out.print("Enter amount to transfer: ");
-            double amount = scanner.nextDouble();
-            sender.transferMoney(receiver, amount);
-        } else {
+        if (sender == null || receiver == null) {
             System.out.println("Invalid account number");
+            return;
         }
+        double amount = InputValidation.readDouble("Enter amount to transfer: ", 1);
+        sender.transferMoney(receiver, amount);
     }
+
+    public static void displayAccountNumbers() {
+        if (accountList.isEmpty()) {
+            System.out.println("No accounts found!");
+            return;
+        }
+        accountList.forEach(account -> {
+            System.out.println("\nAccount Number: " + account.getAccountNumber() + "\n" +
+                    "Account Type: " + account.getAccountType());
+        });
+    }
+
+    public static void displayAccount() {
+        int accountNumber = InputValidation.readInt("Enter valid account number: ", 0);
+        Account tempAccount = findAccountByAccountNumber(accountNumber);
+        if (tempAccount == null) {
+            System.out.println("No such account found. Try again.");
+            return;
+        }
+        System.out.println(tempAccount);
+    }
+
+    public static void displayAllAccounts() {
+        if (accountList.isEmpty()) {
+            System.out.println("No accounts found!");
+            return;
+        }
+        accountList.forEach(account -> {
+            System.out.println("--------------------------------------");
+            System.out.println(
+                    "Holder Name: " + account.getName() + "\n" +
+                    "Account Type: " + account.getAccountType() + "\n" +
+                    "Balance: " + account.getBalance());
+        } );
+    }
+
+    public static void displayTransactions() {
+        if (accountList.isEmpty()) {
+            System.out.println("No accounts is found");
+            return;
+        }
+
+        int accountNumber = InputValidation.readInt("Enter valid account number: ", 0);
+
+        List<Transaction> source = getTransactionsByAccountNumber(accountNumber);
+
+        if (source == null || source.isEmpty()) {
+            System.out.println("No such transactions found!");
+            return;
+        }
+
+        List<Transaction> transactions = new ArrayList<>(source);
+
+
+        System.out.println(
+                "+------+----------+----------+----------------------+----------------------+------------------------+-----------------------+");
+        System.out.printf(
+                "| %-4s | %-8s | %-8s | %-20s | %-20s | %-22s | %-21s |%n",
+                "ID", "Amount", "Type", "Sender", "Receiver", "Balance Before", "Balance After");
+        System.out.println(
+                "+------+----------+----------+----------------------+----------------------+------------------------+-----------------------+");
+
+        transactions.forEach(transaction -> {
+            System.out.printf(
+                    "| %-4d | %-8.2f | %-8s | %-20d | %-20d | %-22.2f | %-21.2f |%n",
+                    transaction.getId(),
+                    transaction.getAmount(),
+                    transaction.getType(),
+                    transaction.getSenderAccountNumber(),
+                    transaction.getReceiverAccountNumber(),
+                    transaction.getBalanceBeforeTransaction(),
+                    transaction.getBalanceAfterTransaction()
+            );
+        });
+
+        System.out.println(
+                "+------+----------+----------+----------------------+----------------------+------------------------+-----------------------+");
+
+    }
+
+    public static List<Transaction> getTransactionsByAccountNumber(int accountNumber) {
+        Account account = findAccountByAccountNumber(accountNumber);
+
+        if (account == null || account.getTransactionList() == null) {
+            System.out.println("No transactions found!");
+            return null;
+        }
+
+        return new ArrayList<>(account.getTransactionList());
+    }
+
+    public static void deleteAccount() {
+        int accountNumber = InputValidation.readInt("Enter valid account number: ", 0);
+
+        if (findAccountByAccountNumber(accountNumber) == null) {
+            System.out.println("No such account found. Try again.");
+            return;
+        }
+
+        deleteAccountById(accountNumber);
+    }
+
+    public static void deleteAccountById(int accountId) {
+        accountList.removeIf(account ->
+            account.getAccountNumber() == accountId
+        );
+    }
+
+    public static int genrateUniqueAccountNumber() {
+        Random random = new Random();
+        int randomNumber;
+        do {
+            randomNumber = random.nextInt(10000, 99999) + 1;
+        } while (findAccountByAccountNumber(randomNumber) != null);
+        return randomNumber;
+    }
+
 }

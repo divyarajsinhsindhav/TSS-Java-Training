@@ -1,4 +1,7 @@
 import java.io.*;
+import java.nio.Buffer;
+import java.util.Collection;
+import java.util.List;
 import java.util.Scanner;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
@@ -9,7 +12,6 @@ public class Main {
         final String DIR_NAME = "test";
 
         File file = new File(DIR_NAME);
-
         if (file.exists()) {
             if (file.isFile()) {
                 readFile(file);

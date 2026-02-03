@@ -4,8 +4,8 @@ import com.tss.Exception.MinimumBalanceException;
 
 public class CurrentAccount extends Account{
     private final static double MINIMUM_BALANCE = 500.0;
-    public CurrentAccount(String name, double balance) {
-        super(name, balance, AccountType.CURRENT);
+    public CurrentAccount(String name, double balance, int accountNumber) {
+        super(name, balance,  accountNumber, AccountType.CURRENT);
         if (balance < MINIMUM_BALANCE) {
             throw new MinimumBalanceException(MINIMUM_BALANCE);
         }
