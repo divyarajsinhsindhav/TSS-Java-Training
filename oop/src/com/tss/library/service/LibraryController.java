@@ -13,7 +13,11 @@ public class LibraryController {
         while (true) {
             displayMenu();
             int userChoice = InputTaker.readInt("Enter valid choice: ", 1, 9);
-            menu(userChoice);
+            try {
+                menu(userChoice);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
         }
     }
 

@@ -1,5 +1,8 @@
 package com.tss.library.service;
 
+import com.tss.library.Exception.AlreadyBorrowedBookException;
+import com.tss.library.Exception.InvalidBookIdException;
+import com.tss.library.Exception.InvalidMemberIdException;
 import com.tss.library.model.*;
 import com.tss.library.utils.InputTaker;
 
@@ -17,20 +20,22 @@ public class BorrowAndReturnService {
     public void borrowBook() {
         int memberId = InputTaker.readInt("Enter valid member id: ", 0);
         Members member = MembersService.getMemberById(memberId);
+
         if (member == null) {
-            System.out.println("No member found");
-            return;
+            throw new InvalidMemberIdException();
         }
+
         int bookId = InputTaker.readInt("Enter valid book id: ", 0);
         BookCopy book = BookServices.getBookById(bookId);
+
         if (book == null) {
-            System.out.println("Book with given id is not found");
-            return;
+            throw new InvalidBookIdException();
         }
+
         if (book.isBorrowed()) {
-            System.out.println("Book is already borrowed.");
-            return;
+            throw new AlreadyBorrowedBookException();
         }
+
         boolean alreadyBorrowed = library.getBorrowedBookList().stream()
                 .anyMatch(record ->
                         record.getMember().getId() == memberId &&
@@ -42,10 +47,12 @@ public class BorrowAndReturnService {
             System.out.println("You already borrowed a copy of this book (same ISBN).");
             return;
         }
+
         book.borrow();
         System.out.println("Thank you for borrow the book." + "\n" +
                 "----------------------------------------------------");
         BookServices.displaySingleBook(bookId);
+
         BorrowRecord borrowRecord = new BorrowRecord(book, member);
         library.getBorrowedBookList().add(borrowRecord);
     }
@@ -53,13 +60,15 @@ public class BorrowAndReturnService {
     public void returnBook() {
         int bookId = InputTaker.readInt("Enter valid book id: ", 0);
         BookCopy book = BookServices.getBookById(bookId);
+
         if (book == null) {
-            System.out.println("Book with given id is not found");
-            return;
+            throw new InvalidBookIdException();
         }
+
         if(!book.isBorrowed()) {
             System.out.println("Book is possible to return because it's not borrowed still");
         }
+
         book.returnBook();
         System.out.println("Thank you for return the book");
         List<BorrowRecord> borrowRecordList = library.getBorrowedBookList();
@@ -71,6 +80,10 @@ public class BorrowAndReturnService {
     }
 
     public void getMemberByBorrowedBook() {
+        if (library.getBorrowedBookList().isEmpty()) {
+            System.out.println("Not any borrowed book");
+            return;
+        }
         int bookId = InputTaker.readInt("Enter valid book id: ");
         List<BorrowRecord> borrowRecordList = library.getBorrowedBookList();
         borrowRecordList.forEach(record -> {
