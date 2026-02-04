@@ -1,7 +1,7 @@
 package com.tss.library.service;
 
-import com.tss.library.model.BookCopy;
 import com.tss.library.model.BorrowRecord;
+import com.tss.library.model.Library;
 import com.tss.library.model.Members;
 import com.tss.library.utils.InputTaker;
 
@@ -16,7 +16,7 @@ public class MembersService {
         MembersService.library = library;
     }
 
-    public static void addMember() {
+    public void addMember() {
         int id = genrateUniqueMemberId();
         String name = InputTaker.readName("Enter member name: ");
         String email;
@@ -28,7 +28,8 @@ public class MembersService {
         System.out.println("Member created successfully");
     }
 
-    public static void getBooksBorrowedByMembers(int memberId) {
+    public void getBooksBorrowedByMembers() {
+        int memberId = InputTaker.readInt("Enter valid member id: ", 0);
         Members member = getMemberById(memberId);
         if (member == null) {
             System.out.println("No member found!");
@@ -39,15 +40,22 @@ public class MembersService {
             System.out.println("No borrow books found in list");
             return;
         }
-        borrowedBooks.forEach(book -> {
-            if (book.getMemberId() == memberId) {
-                System.out.println("Book Id: " + book.getBookId() + "\n" +
-                        "ISBN: " + book.getISBN() + "\n" +
-                        "Book Title: " + book.getBookTitle() + "\n" +
-                        "Borrowed Date: " + book.getBorrowedDate() + "\n" +
-                        "Returned Date: " + book.getReturnDate());
+        System.out.printf("%-10s %-15s %-30s %-20s %-20s%n",
+                "BookID", "ISBN", "Title", "Borrowed Date", "Return Date");
+        System.out.println("-------------------------------------------------------------------------------------------");
+
+        borrowedBooks.forEach(record -> {
+            if (record.getMember().getId() == memberId) {
+                System.out.printf("%-10d %-15d %-30s %-20s %-20s%n",
+                        record.getBook().getId(),
+                        record.getBook().getISBN(),
+                        record.getBook().getTitle(),
+                        record.getBorrowedDate(),
+                        record.getReturnDate() == null ? "Not Returned" : record.getReturnDate()
+                );
             }
         });
+
     }
 
     public static Members getMemberById(int id) {
@@ -60,7 +68,6 @@ public class MembersService {
         }
         return null;
     }
-
 
     public void displayAllMembers() {
         Map<Integer, Members> members = library.getMemberStore();

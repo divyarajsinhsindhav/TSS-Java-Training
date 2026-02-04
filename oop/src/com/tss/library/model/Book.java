@@ -4,9 +4,9 @@ public class Book {
     protected final int ISBN;
     protected String title;
     protected String author;
-    protected String category;
+    protected Category category;
 
-    public Book(int ISBN, String title, String author, String category) {
+    public Book(int ISBN, String title, String author, Category category) {
         this.ISBN = ISBN;
         this.title = title;
         this.author = author;
@@ -21,23 +21,11 @@ public class Book {
         return this.title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public String getAuthor() {
         return this.author;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public String getCategory() {
+    public Category getCategory() {
         return this.category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
     }
 }
