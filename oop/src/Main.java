@@ -1,56 +1,33 @@
-import java.io.*;
-import java.nio.Buffer;
-import java.util.Collection;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
-    public static void main(String[] args) throws IOException {
-        final String FILE_NAME = "test.txt";
-        final String DIR_NAME = "test";
+    public static void main(String[] args) {
+        List<Student> list = new ArrayList<>();
+        list.add(new Student(2, "Divyarajsinh"));
+        list.add(new Student(1, "Peter Parker"));
 
-        File file = new File(DIR_NAME);
-        if (file.exists()) {
-            if (file.isFile()) {
-                readFile(file);
-            } else if (file.isDirectory()) {
-                listDirectory(file);
-            }
-        } else {
-            System.out.println("Doesn't exist");
+//        Collections.sort(list);
+//
+//        System.out.println(list);
+
+        Collections.sort(list, new Name());
+
+        System.out.println(list);
+
+        Map<Integer, String> map = new HashMap<>();
+
+        map.put(1, "Peter");
+        map.put(2, "Tony");
+        map.put(3, "Steve");
+
+        for(Map.Entry<Integer, String> entry : map.entrySet()) {
+            System.out.println(entry.getKey() + "->" + entry.getValue());
         }
-    }
-
-    private static void readFile(File file) {
-        try {
-            Reader r = new FileReader(file);
-            int data = r.read();
-            while (data != -1) {
-                System.out.print((char) data);
-                data = r.read();
-            }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    private static void listDirectory(File file) {
-        try {
-            for (File f : file.listFiles()) {
-                if (f.isDirectory()) {
-                    System.out.println("\n" + f.getName() + "(dir)");
-                    listDirectory(f);
-                } else {
-                    System.out.println(f.getName() + "(file)");
-                }
-            }
 
 
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+
     }
 }
 
