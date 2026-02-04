@@ -2,6 +2,8 @@ package com.tss.library.service;
 
 import com.tss.library.model.Book;
 import com.tss.library.model.BookCopy;
+import com.tss.library.model.Category;
+import com.tss.library.model.Library;
 import com.tss.library.utils.InputTaker;
 
 import java.util.HashMap;
@@ -17,16 +19,22 @@ public class BookServices {
     }
 
     public void addBook() {
-        int ISBN = InputTaker.readInt("Enter ISBN: ");
+        int ISBN = InputTaker.readInt("Enter ISBN: ", 0);
 
-        if (getBookByISBN(ISBN) != null) {
-            BookCopy book = getBookByISBN(ISBN);
-            library.getBookStore().put(genrateUniqueBookId(), book);
+        BookCopy book = getBookByISBN(ISBN);
+
+        if (book != null) {
+            int id = genrateUniqueBookId();
+            BookCopy newBook = new BookCopy(id, book.getBook());
+            library.getBookStore().put(genrateUniqueBookId(), newBook);
+            return;
         }
 
         String title = InputTaker.readString("Enter title of Book: ");
         String author = InputTaker.readName("Enter author name of Book: ");
-        String category = InputTaker.readString("Enter category: ");
+        CategoryService.displayAllCategory();
+        int choice = InputTaker.readInt("Select category number: ", 1);
+        Category category = Category.values()[choice - 1];
         int bookId = genrateUniqueBookId();
         Book newBook = new Book(ISBN, title, author, category);
         BookCopy bookCopy = new BookCopy(bookId, newBook);
@@ -34,7 +42,7 @@ public class BookServices {
     }
 
     public static void displaySingleBook(int id) {
-        BookCopy book = getBookByISBN(id);
+        BookCopy book = getBookById(id);
         if (book == null) {
             System.out.println("Book not found with your given Id");
         }
@@ -85,7 +93,7 @@ public class BookServices {
         int bookId;
         do {
             bookId = random.nextInt(1000, 9999) + 1;
-        } while (getBookById(bookId) == null);
+        } while (getBookById(bookId) != null);
         return bookId;
     }
 

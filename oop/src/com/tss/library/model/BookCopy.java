@@ -36,14 +36,18 @@ public class BookCopy {
     }
 
     public String getTitle() {
-        return book.getAuthor();
+        return book.getTitle();
     }
 
     public String getAuthor() {
         return book.getAuthor();
     }
 
-    public String getCategory() {
+    public Category getCategory() {
         return book.getCategory();
+    }
+
+    public Book getBook() {
+        return this.book;
     }
 }
