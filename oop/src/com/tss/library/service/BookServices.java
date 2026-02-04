@@ -1,5 +1,6 @@
 package com.tss.library.service;
 
+import com.tss.library.Exception.InvalidBookIdException;
 import com.tss.library.model.Book;
 import com.tss.library.model.BookCopy;
 import com.tss.library.model.Category;
@@ -44,7 +45,7 @@ public class BookServices {
     public static void displaySingleBook(int id) {
         BookCopy book = getBookById(id);
         if (book == null) {
-            System.out.println("Book not found with your given Id");
+            throw new InvalidBookIdException();
         }
         System.out.println("Id: " + book.getId() + "\n" +
                 "ISBN: " + book.getISBN() + "\n" +
