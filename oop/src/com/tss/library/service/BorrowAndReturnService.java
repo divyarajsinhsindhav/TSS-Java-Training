@@ -70,6 +70,7 @@ public class BorrowAndReturnService {
         }
 
         book.returnBook();
+
         System.out.println("Thank you for return the book");
         List<BorrowRecord> borrowRecordList = library.getBorrowedBookList();
         borrowRecordList.forEach(record -> {

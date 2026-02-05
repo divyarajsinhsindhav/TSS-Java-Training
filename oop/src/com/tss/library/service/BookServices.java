@@ -33,11 +33,15 @@ public class BookServices {
 
         String title = InputTaker.readString("Enter title of Book: ");
         String author = InputTaker.readName("Enter author name of Book: ");
+
         CategoryService.displayAllCategory();
-        int choice = InputTaker.readInt("Select category number: ", 1);
+        int choice = InputTaker.readInt("Select category number: ", 1, Category.values().length);
         Category category = Category.values()[choice - 1];
+
         int bookId = genrateUniqueBookId();
+
         Book newBook = new Book(ISBN, title, author, category);
+
         BookCopy bookCopy = new BookCopy(bookId, newBook);
         library.getBookStore().put(bookId, bookCopy);
     }

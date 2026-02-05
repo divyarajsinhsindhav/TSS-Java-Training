@@ -31,15 +31,18 @@ public class MembersService {
     public void getBooksBorrowedByMembers() {
         int memberId = InputTaker.readInt("Enter valid member id: ", 0);
         Members member = getMemberById(memberId);
+
         if (member == null) {
             System.out.println("No member found!");
             return;
         }
+
         List<BorrowRecord> borrowedBooks = library.getBorrowedBookList();
         if (borrowedBooks == null) {
             System.out.println("No borrow books found in list");
             return;
         }
+
         System.out.printf("%-10s %-15s %-30s %-20s %-20s%n",
                 "BookID", "ISBN", "Title", "Borrowed Date", "Return Date");
         System.out.println("-------------------------------------------------------------------------------------------");

@@ -6,7 +6,7 @@ public class Library {
     private static Map<Integer, BookCopy> bookStore = new LinkedHashMap<>();
     private static Map<Integer, Members> memberStore = new HashMap<>();
     private static List<BorrowRecord> borrowedBookList = new ArrayList<>();
-    private static Set<String> category = new HashSet<>();
+//    private static Set<String> category = new HashSet<>();
 
     public Map<Integer, BookCopy> getBookStore() {
         return bookStore;
@@ -20,7 +20,7 @@ public class Library {
         return borrowedBookList;
     }
 
-    public Set<String> getCategory() {
-        return category;
-    }
+//    public Set<String> getCategory() {
+//        return category;
+//    }
 }
