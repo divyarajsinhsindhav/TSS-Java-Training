@@ -11,8 +11,9 @@ public class APIRequestMain {
 
         APIRequest apiRequest2 = new APIRequest.Builder("https://api.example.com/user")
                 .method(RequestMethod.POST)
-                .body("{name: \"Divyarajsinh\"}")
+                .body("{\"name\": \"Divyarajsinh\",\"email\": \"divyarajsinh.sindhav@java.com\"}")
                 .addHeader("X-Auth", "token")
+                .addHeader("Content-Type", "application/json")
                 .build();
         System.out.println("APIRequest 2: " + apiRequest2);
     }
