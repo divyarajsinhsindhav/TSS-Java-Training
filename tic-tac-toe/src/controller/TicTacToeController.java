@@ -34,7 +34,7 @@ public class TicTacToeController {
 
             if (winner != null) {
                 facade.printBoard();
-                System.out.println("🎉 Winner is " + winner.getMark());
+                System.out.println("Winner is " + winner.getMark());
                 return;
             }
 

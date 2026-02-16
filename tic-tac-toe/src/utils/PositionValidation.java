@@ -7,7 +7,7 @@ public class PositionValidation {
     public int readNumber() {
         while (!scanner.hasNextInt()) {
             System.out.println("Invalid input! Please enter a number.");
-            scanner.next(); // discard invalid input
+            scanner.next();
         }
         return scanner.nextInt();
     }

@@ -2,11 +2,10 @@ package model;
 
 public class Board {
     public char[][] board;
-    public final int ROW = 3;
-    public final int COL = 3;
+    private final int SIZE = 3;
 
     public Board() {
-        this.board = new char[ROW][COL];
+        this.board = new char[SIZE][SIZE];
     }
 
     public char[][] getBoard() {
