@@ -1,69 +1,52 @@
 package controller;
 
-import model.Board;
 import model.Player;
-import service.BoardService;
-import service.GameLogic;
-import service.PlayerService;
-import utils.PositionValidation;
-
+import service.TicTacToeFacade;
 
 public class TicTacToeController {
-    Board board = new Board();
 
-    BoardService boardService = new BoardService();
-    GameLogic gameLogic = new GameLogic();
-    PlayerService playerService = new PlayerService();
-    PositionValidation positionValidation = new PositionValidation();
+    private final TicTacToeFacade facade = new TicTacToeFacade();
 
     public void start() {
 
-        Player currentPlayer = playerService.getPlayer1();
+        Player currentPlayer = facade.getPlayer1();
         Player winner;
 
         while (true) {
 
-            boardService.printBoard(board.getBoard());
+            facade.printBoard();
 
             System.out.println("______________");
             System.out.println(currentPlayer.getMark() + " turn");
             System.out.println("Enter position (row col): ");
 
-            int row = positionValidation.readNumber();
-            int col = positionValidation.readNumber();
+            int row = facade.readNumber();
+            int col = facade.readNumber();
 
-            boolean placed = boardService.placeMark(
-                    row,
-                    col,
-                    currentPlayer.getMark(),
-                    board.getBoard()
-            );
+            boolean placed = facade.placeMark(row, col, currentPlayer.getMark());
 
             if (!placed) {
                 System.out.println("Invalid move! Try again.");
                 continue;
             }
 
-            winner = gameLogic.checkWinner(board.getBoard(), currentPlayer.getMark());
+            winner = facade.checkWinner(currentPlayer.getMark());
 
             if (winner != null) {
-                boardService.printBoard(board.getBoard());
+                facade.printBoard();
                 System.out.println("🎉 Winner is " + winner.getMark());
                 return;
             }
 
-            if (gameLogic.isGameBoardFull(board.getBoard())) {
-                boardService.printBoard(board.getBoard());
+            if (facade.isGameBoardFull()) {
+                facade.printBoard();
                 System.out.println("Game is a Draw!");
                 return;
             }
 
-            // Switch player
-            currentPlayer = (currentPlayer == playerService.getPlayer1())
-                    ? playerService.getPlayer2()
-                    : playerService.getPlayer1();
-
+            currentPlayer = (currentPlayer == facade.getPlayer1())
+                    ? facade.getPlayer2()
+                    : facade.getPlayer1();
         }
     }
-
 }

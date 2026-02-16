@@ -69,4 +69,19 @@ public class BoardService {
         System.out.println();
     }
 
+    public boolean isBoardFull(char[][] board) {
+
+        int size = board.length;
+
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (board[i][j] == '\0') {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
 }

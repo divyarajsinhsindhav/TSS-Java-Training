@@ -67,21 +67,6 @@ public class GameLogic {
     }
 
 
-    public boolean isGameBoardFull(char[][] board) {
-
-        int size = board.length;
-
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                if (board[i][j] == '\0') {
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
-
     public boolean isGameBoardEmpty(char[][] board) {
         int size = board.length;
         for (int i = 0; i < size; i++) {
