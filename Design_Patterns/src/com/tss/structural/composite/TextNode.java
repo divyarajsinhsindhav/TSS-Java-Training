@@ -1,5 +1,6 @@
 package com.tss.structural.composite;
 
+// Leaf Node
 public class TextNode implements Node {
     private String text;
 
