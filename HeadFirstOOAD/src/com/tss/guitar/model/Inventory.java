@@ -5,47 +5,35 @@ import java.util.Iterator;
 import java.util.List;
 
 public class Inventory {
-    private List<Guitar> guitars;
+    private List<Instrument> instruments;
 
     public Inventory() {
-        this.guitars = new ArrayList<>();
+        this.instruments = new ArrayList<>();
     }
 
-    public void addGuitar(String serialNumber, double price, String builder, String model, String type, String backWood, String topWood){
-        Guitar guitar=new Guitar(serialNumber,price, builder, model, type, backWood, topWood);
-        guitars.add(guitar);
+    public void addInstrument(String serialNumber, double price,InstrumentSpec spec){
+        if(spec instanceof GuitarSpec){
+            instruments.add(new Guitar(serialNumber,price,(GuitarSpec) spec));
+        }
+        if(spec instanceof MandolinSpec){
+            instruments.add(new Mandolin(serialNumber,price,(MandolinSpec) spec));
+        }
     }
 
-    public Guitar getGuitar(String serialNumber) {
-        for (Guitar guitar : guitars) {
-            if (guitar.getSerialNumber().equals(serialNumber)) {
-                return guitar;
+    public List<Guitar> search(GuitarSpec guitarSpec){
+        List<Guitar> guitarList=new ArrayList<>();
+        for(Instrument g:instruments){
+            if(g.getSpec().matches(guitarSpec)){
+                guitarList.add((Guitar)g);
             }
         }
-        return null;
+        return guitarList;
     }
-
-    public Guitar search(Guitar searchGuitar) {
-        for (Guitar guitar : guitars) {
-
-            if (!searchGuitar.getBuilder().equalsIgnoreCase(guitar.getBuilder()))
-                continue;
-
-            if (!searchGuitar.getModel().equalsIgnoreCase(guitar.getModel()))
-                continue;
-
-            if (!searchGuitar.getType().equalsIgnoreCase(guitar.getType()))
-                continue;
-
-            if (!searchGuitar.getBackWood().equalsIgnoreCase(guitar.getBackWood()))
-                continue;
-
-            if (!searchGuitar.getTopWood().equalsIgnoreCase(guitar.getTopWood()))
-                continue;
-
-            return guitar;
+    public List<Mandolin> search(MandolinSpec searchSpec) {
+        List<Mandolin> mandolinList=new ArrayList<>();
+        for(Instrument i:instruments){
+            if(i.getSpec().matches(searchSpec))mandolinList.add((Mandolin)i);
         }
-        return null;
+        return mandolinList;
     }
-
 }
