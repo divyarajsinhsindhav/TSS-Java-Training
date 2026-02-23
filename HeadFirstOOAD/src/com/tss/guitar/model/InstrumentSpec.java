@@ -1,51 +1,33 @@
 package com.tss.guitar.model;
 
-public abstract class InstrumentSpec {
-    private Builder builder;
-    private String model;
-    private Type type;
-    private Wood backWood;
-    private Wood topWood;
-    public InstrumentSpec(Builder builder, Type type, Wood backWood, Wood topWood, String model) {
-        this.builder = builder;
-        this.type = type;
-        this.backWood = backWood;
-        this.topWood = topWood;
-        this.model = model;
+import java.util.Map;
+
+public class InstrumentSpec {
+    Map<String,Object> properties;
+    public InstrumentSpec(Map<String,Object> properties) {
+        this.properties=properties;
     }
 
-    public boolean matches(InstrumentSpec otherSpec) {
-        if (builder != otherSpec.builder)
-            return false;
-        if ((model != null) && (!model.equals("")) &&
-                (!model.equals(otherSpec.model)))
-            return false;
-        if (type != otherSpec.type)
-            return false;
-        if (backWood != otherSpec.backWood)
-            return false;
-        if (topWood != otherSpec.topWood)
-            return false;
+    public Object getProperty(String property){
+        for (String key : properties.keySet()) {
+            if(key.equalsIgnoreCase(property)){
+                return properties.get(key);
+            }
+        }
+        return null;
+    }
+
+    public Map<String, Object> getProperties() {
+        return properties;
+    }
+
+    public boolean match(InstrumentSpec userSpec){
+        for(Map.Entry<String,Object> entry : userSpec.getProperties().entrySet()){
+            String propertyKey=entry.getKey();
+            if(!(userSpec.getProperties().get(propertyKey).equals(this.getProperty(propertyKey)))) return false;
+
+        }
         return true;
     }
 
-    public Builder getBuilder() {
-        return builder;
-    }
-
-    public String getModel() {
-        return model;
-    }
-
-    public Type getType() {
-        return type;
-    }
-
-    public Wood getBackWood() {
-        return backWood;
-    }
-
-    public Wood getTopWood() {
-        return topWood;
-    }
 }

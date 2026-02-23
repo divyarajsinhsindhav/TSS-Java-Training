@@ -12,28 +12,18 @@ public class Inventory {
     }
 
     public void addInstrument(String serialNumber, double price,InstrumentSpec spec){
-        if(spec instanceof GuitarSpec){
-            instruments.add(new Guitar(serialNumber,price,(GuitarSpec) spec));
-        }
-        if(spec instanceof MandolinSpec){
-            instruments.add(new Mandolin(serialNumber,price,(MandolinSpec) spec));
-        }
+        instruments.add(new Instrument(serialNumber,price,spec));
     }
 
-    public List<Guitar> search(GuitarSpec guitarSpec){
-        List<Guitar> guitarList=new ArrayList<>();
-        for(Instrument g:instruments){
-            if(g.getSpec().matches(guitarSpec)){
-                guitarList.add((Guitar)g);
+    public List<Instrument> search(InstrumentSpec specs){
+        List<Instrument> matchingInstruments=new ArrayList<>();
+
+        for(Instrument instrument:instruments){
+            if(instrument.getSpecs().match(specs)){
+                matchingInstruments.add(instrument);
             }
         }
-        return guitarList;
+        return matchingInstruments;
     }
-    public List<Mandolin> search(MandolinSpec searchSpec) {
-        List<Mandolin> mandolinList=new ArrayList<>();
-        for(Instrument i:instruments){
-            if(i.getSpec().matches(searchSpec))mandolinList.add((Mandolin)i);
-        }
-        return mandolinList;
-    }
+
 }

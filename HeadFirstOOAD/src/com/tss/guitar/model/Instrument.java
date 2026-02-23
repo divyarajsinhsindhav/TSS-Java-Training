@@ -1,12 +1,17 @@
 package com.tss.guitar.model;
 
-public abstract class Instrument {
+public class Instrument {
     private String serialNumber;
     private double price;
+    private InstrumentSpec specs;
 
-    public Instrument(String serialNumber, double price) {
+    public Instrument(String serialNumber, double price,InstrumentSpec specs) {
         this.serialNumber = serialNumber;
         this.price = price;
+        this.specs=specs;
+    }
+    public InstrumentSpec getSpecs(){
+        return specs;
     }
 
     public String getSerialNumber() {
@@ -17,17 +22,16 @@ public abstract class Instrument {
         return price;
     }
 
-    public abstract InstrumentSpec getSpec();
+    public void setPrice(double price) {
+        this.price = price;
+    }
 
     @Override
     public String toString() {
-        return  this.getClass().getSimpleName()+"{" +
+        return "Instrument{" +
                 "serialNumber='" + serialNumber + '\'' +
                 ", price=" + price +
-                ", builder='" + getSpec().getBuilder() + '\'' +
-                ", top wood='" + getSpec().getTopWood() + '\'' +
-                ", back wood='" + getSpec().getBackWood() + '\'' +
-                ", type='" + getSpec().getType() + '\'' +
-                ", model='" + getSpec().getModel() + '\'';
+                ", specs=" + specs +
+                '}';
     }
 }
