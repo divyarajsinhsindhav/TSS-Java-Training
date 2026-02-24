@@ -1,7 +1,8 @@
-package com.tss.model;
+package com.tss.FileHandling.movie.model;
 
-import com.tss.Exception.CapacityFullException;
-import com.tss.Exception.NoSuchMovieFoundException;
+
+import com.tss.FileHandling.movie.exception.CapacityFullException;
+import com.tss.FileHandling.movie.exception.NoSuchMovieFoundException;
 
 import java.util.Scanner;
 
@@ -119,16 +120,5 @@ public class MovieController {
         movie.setGenre(genre);
 
         manager.saveMovies();
-    }
-
-    public void deleteSingleMovie() {
-        System.out.println("Enter movie Id: ");
-        int id = scanner.nextInt();
-
-        Movie movie = getMovieById(id);
-
-        if (movie != null) {
-            //TODO
-        }
     }
 }

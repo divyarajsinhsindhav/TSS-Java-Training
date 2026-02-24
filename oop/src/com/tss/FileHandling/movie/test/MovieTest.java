@@ -1,7 +1,6 @@
-package com.tss.test;
+package com.tss.FileHandling.movie.test;
 
-import com.tss.model.MovieController;
-import com.tss.model.MovieManager;
+import com.tss.FileHandling.movie.model.MovieController;
 
 public class MovieTest {
     public static void main(String[] args) {

@@ -1,4 +1,4 @@
-package com.tss.model;
+package com.tss.FileHandling.movie.model;
 
 import java.io.Serializable;
 

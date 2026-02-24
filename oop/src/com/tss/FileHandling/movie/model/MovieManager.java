@@ -1,11 +1,10 @@
-package com.tss.model;
+package com.tss.FileHandling.movie.model;
 
 import com.tss.Exception.CapacityFullException;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class MovieManager{
     List<Movie> movies;
@@ -83,13 +82,5 @@ public class MovieManager{
         clearMovies();
         saveMovies();
         currentMovieCount = 0;
-    }
-
-    public void deleteSingleMovie(int id) throws IOException, ClassNotFoundException {
-        File file = new File(filePath);
-        List<Movie> tempMovies = new ArrayList<>();
-        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
-        tempMovies = (List<Movie>) ois.readObject();
-
     }
 }
