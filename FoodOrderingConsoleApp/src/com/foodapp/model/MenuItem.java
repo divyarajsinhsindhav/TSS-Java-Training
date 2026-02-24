@@ -1,5 +1,0 @@
-package com.foodapp.model;
-
-public class MenuItem extends Menu {
-
-}
