@@ -2,6 +2,10 @@ package com.foodapp.service;
 
 import com.foodapp.model.*;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 public class MenuService {
 
     private final Menu root;
@@ -16,7 +20,7 @@ public class MenuService {
 
     public void addCategory(int parentId, int id, String categoryName) {
 
-        MenuCategory parent = findCategoryById(root, parentId);
+        Menu parent = findCategoryById(root, parentId);
 
         if (parent == null) {
             throw new RuntimeException("Parent category not found");
@@ -42,21 +46,20 @@ public class MenuService {
 
     private MenuCategory findCategoryById(Menu menu, int id) {
 
-        if (menu instanceof MenuCategory category) {
-
-            if (category.getId() == id) {
-                return category;
-            }
-
-            for (Menu child : category.getMenu()) {
-                MenuCategory result = findCategoryById(child, id);
-
-                if (result != null) {
-                    return result;
-                }
-            }
+        if (!(menu instanceof MenuCategory category)) {
+            return null;
         }
-        return null;
+
+        if (category.getId() == id) {
+            return category;
+        }
+
+        return category.getMenu()
+                .stream()
+                .map(child -> findCategoryById(child, id))
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(null);
     }
 
     public FoodItem findFoodItem(int id) {
@@ -86,4 +89,41 @@ public class MenuService {
     public Menu getMenu()  {
         return root;
     };
+
+    public List<FoodItem> getFoodItems() {
+        List<FoodItem> items = new ArrayList<>();
+        collectFoodItems(root, items);
+        return items;
+    }
+
+    private void collectFoodItems(Menu menu, List<FoodItem> items) {
+
+        if (menu instanceof FoodItem foodItem) {
+            items.add(foodItem);
+            return;
+        }
+
+        if (menu instanceof MenuCategory category) {
+            for (Menu child : category.getMenu()) {
+                collectFoodItems(child, items);
+            }
+        }
+    }
+
+    public List<MenuCategory> getCategory() {
+        List<MenuCategory> categories = new ArrayList<>();
+        collectCategories(root, categories);
+        return categories;
+    }
+
+    private void collectCategories(Menu menu, List<MenuCategory> categories) {
+
+        if (menu instanceof MenuCategory category) {
+            categories.add(category);
+
+            for (Menu child : category.getMenu()) {
+                collectCategories(child, categories);
+            }
+        }
+    }
 }

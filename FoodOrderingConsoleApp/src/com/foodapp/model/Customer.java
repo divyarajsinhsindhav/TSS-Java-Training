@@ -4,9 +4,9 @@ public class Customer {
     private int id;
     private String name;
     private String email;
-    private int phone;
+    private String phone;
 
-    public Customer(int id, String name, String email, int phone) {
+    public Customer(int id, String name, String email, String phone) {
         if (id <= 0) {
             throw new IllegalArgumentException("Customer id must be greater than 0");
         }
@@ -15,11 +15,11 @@ public class Customer {
             throw new IllegalArgumentException("Customer name cannot be null or empty");
         }
 
-        if (email == null || email.length() == 0) {
+        if (email == null || email.isEmpty()) {
             throw new IllegalArgumentException("Customer email cannot be null or empty");
         }
 
-        if (phone <= 0) {
+        if (phone == null || phone.isEmpty()) {
             throw new IllegalArgumentException("Customer phone number must be greater than 0");
         }
         this.id = id;
@@ -40,7 +40,7 @@ public class Customer {
         return email;
     }
 
-    public int getPhone() {
+    public String getPhone() {
         return phone;
     }
 
@@ -50,7 +50,7 @@ public class Customer {
                 "+----+----------------+----------------------+------------+\n" +
                         "| ID | Name           | Email                | Phone      |\n" +
                         "+----+----------------+----------------------+------------+\n" +
-                        "| %-2d | %-14s | %-20s | %-10d |\n" +
+                        "| %-2d | %-14s | %-20s | %-10s |\n" +
                         "+----+----------------+----------------------+------------+",
                 id, name, email, phone
         );

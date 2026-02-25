@@ -7,19 +7,19 @@ public class Order {
     private Customer customer;
     private List<OrderItem> orderItems;
     private double total;
-    private Discount discount;
+    private double discountRate;
     private PaymentMode mode;
     private DeliveryPartner deliveryPartner;
     private double finalAmount;
 
     public Order(int id, List<OrderItem> orderItems, Customer customer,
-                 double total, Discount discount, PaymentMode mode,
+                 double total, double discountRate, PaymentMode mode,
                 double finalAmount) {
         this.id = id;
         this.orderItems = orderItems;
         this.customer = customer;
         this.total = total;
-        this.discount = discount;
+        this.discountRate = discountRate;
         this.mode = mode;
         this.finalAmount = finalAmount;
     }
@@ -40,8 +40,8 @@ public class Order {
         return total;
     }
 
-    public Discount getDiscount() {
-        return discount;
+    public double getDiscountRate() {
+        return discountRate;
     }
 
     public PaymentMode getPaymentMode() {

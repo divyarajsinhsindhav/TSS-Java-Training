@@ -30,6 +30,25 @@ public class InputValidation {
         }
     }
 
+    public static int readPositiveZeroInt(Scanner sc, String message) {
+        int value;
+
+        while (true) {
+            System.out.print(message);
+            if (sc.hasNextInt()) {
+                value = sc.nextInt();
+                if (value >= 0) {
+                    return value;
+                } else {
+                    System.out.println("Value must be greater than 0.");
+                }
+            } else {
+                System.out.println("Invalid number.");
+                sc.next();
+            }
+        }
+    }
+
     public static int readIntInRange(Scanner sc, String message, int min, int max) {
         int value;
 
@@ -98,12 +117,11 @@ public class InputValidation {
     }
 
     public static String readValidName(Scanner sc, String message) {
-        String name;
 
         while (true) {
             System.out.print(message);
-            sc.nextLine();
-            name = sc.nextLine().trim();
+
+            String name = sc.nextLine().trim();
 
             if (name.isEmpty()) {
                 System.out.println("Input cannot be empty.");
@@ -111,7 +129,7 @@ public class InputValidation {
             }
 
             if (!name.matches("^[A-Za-z ]{2,50}$")) {
-                System.out.println("Input must contain only letters and spaces (2-50 characters).");
+                System.out.println("Name must contain only letters and spaces (2-50 characters).");
                 continue;
             }
 
