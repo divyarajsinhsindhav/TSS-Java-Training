@@ -19,6 +19,7 @@ public class DeliveryPartnerRepository {
         if(deliveryPartner == null){
             throw new IllegalArgumentException("Delivery Partner cannot be null");
         }
+        deliveryPartners.remove(deliveryPartner);
     }
 
     public List<DeliveryPartner> getAllDeliveryPartners() {

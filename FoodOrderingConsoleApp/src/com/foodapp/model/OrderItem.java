@@ -2,11 +2,11 @@ package com.foodapp.model;
 
 public class OrderItem {
     private int id;
-    private Menu foodItem;
+    private FoodItem foodItem;
     private int quantity;
     private double price;
 
-    public OrderItem(int id, Menu foodItem, int quantity,  double price) {
+    public OrderItem(int id, FoodItem foodItem, int quantity,  double price) {
         if (id <= 0) {
             throw new IllegalArgumentException("id must be positive");
         }
@@ -29,7 +29,7 @@ public class OrderItem {
         return id;
     }
 
-    public Menu getFoodItem() {
+    public FoodItem getFoodItem() {
         return foodItem;
     }
 
@@ -39,5 +39,9 @@ public class OrderItem {
 
     public double getPrice() {
         return price;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 }

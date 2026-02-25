@@ -14,26 +14,37 @@ public class AdminController {
     private static final int ADD_ITEM = 1;
     private static final int ADD_CATEGORY = 2;
     private static final int SET_DISCOUNT = 3;
-    private static final int ADD_DELIVERY_AGENT = 4;
-    private static final int BACK = 5;
+    private static final int SET_DISCOUNT_ON = 4;
+    private static final int ADD_DELIVERY_AGENT = 5;
+    private static final int BACK = 6;
 
     private final Scanner scanner;
     private final MenuService menuService;
     private final DeliveryPartnerService deliveryPartnerService;
+    private MenuController menuController;
 
     public AdminController(MenuService menuService,
                            DeliveryPartnerService deliveryPartnerService) {
         this.scanner = new Scanner(System.in);
         this.menuService = menuService;
         this.deliveryPartnerService = deliveryPartnerService;
+        this.menuController = new MenuController(menuService);
     }
 
     public void displayOptions() {
-        printMenu();
+        while (true) {
+            printMenu();
 
-        int choice = InputValidation.readIntInRange(scanner, "Enter your choice: ", ADD_ITEM, BACK);
+            int choice = InputValidation.readIntInRange(scanner,
+                    "Enter your choice: ", ADD_ITEM, BACK);
 
-        handleChoice(choice);
+            if (choice == BACK) {
+                System.out.println("Returning to previous menu...");
+                return;
+            }
+
+            handleChoice(choice);
+        }
     }
 
     private void printMenu() {
@@ -41,6 +52,7 @@ public class AdminController {
         System.out.println(ADD_ITEM + ". Add item in menu");
         System.out.println(ADD_CATEGORY + ". Add new menu category");
         System.out.println(SET_DISCOUNT + ". Set Flat Discount");
+        System.out.println(SET_DISCOUNT_ON + ". Set valid amount for discount");
         System.out.println(ADD_DELIVERY_AGENT + ". Add delivery agent");
         System.out.println(BACK + ". Back");
     }
@@ -49,7 +61,8 @@ public class AdminController {
         switch (choice) {
             case ADD_ITEM -> addItemInMenu();
             case ADD_CATEGORY -> addMenuCategory();
-            case SET_DISCOUNT -> setFlatDiscount();
+            case SET_DISCOUNT -> setFlatDiscountRate();
+            case SET_DISCOUNT_ON -> setFlatDiscountOn();
             case ADD_DELIVERY_AGENT -> addDeliveryAgent();
             case BACK -> System.out.println("Returning to previous menu...");
             default -> System.out.println("Invalid choice");
@@ -58,8 +71,8 @@ public class AdminController {
 
     private void addMenuCategory() {
         System.out.println("\n--- Add Menu Category ---");
-
-        int parentCategoryId = InputValidation.readPositiveInt(scanner, "Enter parent category Id: ");
+        menuController.displayCategory();
+        int parentCategoryId = InputValidation.readPositiveZeroInt(scanner, "Enter parent category Id: ");
 
         int categoryId = IdGenerator.getNextCategoryID();
         String categoryName = InputValidation.readValidName(scanner, "Enter category name: ");
@@ -70,7 +83,7 @@ public class AdminController {
 
     private void addItemInMenu() {
         System.out.println("\n--- Add Item In Menu ---");
-
+        menuController.displayCategory();
         int categoryId = InputValidation.readPositiveInt(scanner, "Enter category id: ");
 
         int foodItemId = IdGenerator.getNextItemID();
@@ -82,13 +95,22 @@ public class AdminController {
         System.out.println("Food item added successfully!");
     }
 
-    private void setFlatDiscount() {
+    private void setFlatDiscountRate() {
         System.out.println("\n--- Set Flat Discount ---");
 
         int flatDiscount = InputValidation.readPositiveInt(scanner, "Enter Flat Discount: ");
 
         FlatDiscount.getInstance().setDiscount(flatDiscount);
         System.out.println("Discount updated successfully!");
+    }
+
+    private void setFlatDiscountOn() {
+        System.out.println("\n--- Set Flat Discount On ---");
+
+        double flatDiscount = InputValidation.readPositiveDouble(scanner, "Enter amount: ");
+
+        FlatDiscount.getInstance().setFlatDiscountOn(flatDiscount);
+        System.out.println("Amount for discount updated successfully!");
     }
 
     private void addDeliveryAgent() {

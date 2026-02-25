@@ -3,31 +3,30 @@ package com.foodapp.repository;
 import com.foodapp.model.OrderItem;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CartRepository {
-    private List<OrderItem> cart = new ArrayList<>();
+    private Map<Integer, List<OrderItem>> cart = new HashMap<>();
 
-    public void addToCart(OrderItem orderItem) {
-        if (cart == null) {
-            throw new NullPointerException("Cart is null");
+    public void addToCart(Integer customerId, OrderItem item) {
+        cart.putIfAbsent(customerId, new ArrayList<>());
+        cart.get(customerId).add(item);
+    }
+
+    public void removeFromCart(Integer customerId, OrderItem item) {
+        if (cart.containsKey(customerId)) {
+            cart.get(customerId).remove(item);
         }
-        cart.add(orderItem);
     }
 
-    public void removeFromCart(OrderItem orderItem) {
-        if (cart == null) {
-            throw new NullPointerException("Cart is null");
-        }
-        cart.remove(orderItem);
+    public void clearCart(Integer customerId) {
+        cart.remove(customerId);
     }
 
-    public void clearCart() {
-        cart = new ArrayList<>();
-    }
-
-    public List<OrderItem> getCart() {
-        return new ArrayList<>(cart);
+    public List<OrderItem> getCart(Integer customerId) {
+        return cart.getOrDefault(customerId, new ArrayList<>());
     }
 
 }
