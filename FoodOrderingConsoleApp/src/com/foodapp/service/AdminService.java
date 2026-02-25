@@ -10,7 +10,7 @@ public class AdminService {
     }
 
     public void setFlatDiscountOn(Discount discount, double rate) {
-        FlatDiscount.setFlatDiscountOn(rate);
+        FlatDiscount.getInstance().setFlatDiscountOn(rate);
     }
 
 }

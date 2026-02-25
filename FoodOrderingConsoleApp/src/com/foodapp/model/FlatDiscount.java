@@ -1,22 +1,35 @@
 package com.foodapp.model;
 
-public class FlatDiscount {
-    private static double flatDiscountOn;
-    private static double DISCOUNT_RATE;
+public class FlatDiscount implements Discount {
 
-    public static double getDiscountRate() {
-        return DISCOUNT_RATE;
+    private double discountRate;
+    private double flatDiscountOn;
+
+    private FlatDiscount() {}
+
+    private static class SingletonHelper {
+        private static final FlatDiscount INSTANCE = new FlatDiscount();
     }
 
-    public static void setDiscountRate(double rate) {
-        DISCOUNT_RATE = rate;
+    @Override
+    public double getDiscount() {
+        return discountRate;
     }
 
-    public static double getFlatDiscountOn() {
+    @Override
+    public void setDiscount(double rate) {
+        discountRate = rate;
+    }
+
+    public double getFlatDiscountOn() {
         return flatDiscountOn;
     }
 
-    public static void setFlatDiscountOn(double flatDiscountOn) {
-        FlatDiscount.flatDiscountOn = flatDiscountOn;
+    public static FlatDiscount getInstance() {
+        return SingletonHelper.INSTANCE;
+    }
+
+    public void setFlatDiscountOn(double flatDiscountOn) {
+        FlatDiscount.getInstance().flatDiscountOn = flatDiscountOn;
     }
 }

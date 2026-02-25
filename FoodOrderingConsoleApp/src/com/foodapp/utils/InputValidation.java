@@ -50,6 +50,25 @@ public class InputValidation {
         }
     }
 
+    public static double readPositiveDouble(Scanner sc, String message) {
+        double value;
+
+        while (true) {
+            System.out.print(message);
+            if (sc.hasNextDouble()) {
+                value = sc.nextDouble();
+                if (value > 0) {
+                    return value;
+                } else {
+                    System.out.println("Value must be greater than 0.");
+                }
+            } else {
+                System.out.println("Invalid number.");
+                sc.next();
+            }
+        }
+    }
+
     public static String readValidEmail(Scanner sc, String message) {
         String email;
 

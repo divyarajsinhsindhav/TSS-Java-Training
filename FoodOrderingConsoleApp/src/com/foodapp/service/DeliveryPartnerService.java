@@ -1,6 +1,7 @@
 package com.foodapp.service;
 
 import com.foodapp.model.DeliveryPartner;
+import com.foodapp.model.Order;
 import com.foodapp.repository.DeliveryPartnerRepository;
 
 import java.util.List;
@@ -62,5 +63,13 @@ public class DeliveryPartnerService {
         DeliveryPartner assignedPartner = partners.get(index);
 
         return assignedPartner;
+    }
+
+    public List<Order> getOrderByDeliveryPartner(int id) {
+        DeliveryPartner deliveryPartner = getDeliveryPartnerById(id);
+        if (deliveryPartner == null) {
+            throw new NullPointerException("Delivery Partner not found with id: " + id);
+        }
+        return deliveryPartner.getOrders();
     }
 }

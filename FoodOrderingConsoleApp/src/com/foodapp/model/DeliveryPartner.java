@@ -1,5 +1,6 @@
 package com.foodapp.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DeliveryPartner {
@@ -8,11 +9,11 @@ public class DeliveryPartner {
     private String email;
     private List<Order> orders;
 
-    public DeliveryPartner(int id, String name, String email, List<Order> orders) {
+    public DeliveryPartner(int id, String name, String email) {
         this.id = id;
         this.name = name;
         this.email = email;
-        this.orders = orders;
+        this.orders = new ArrayList<>();
     }
 
     public int getId() {
