@@ -1,6 +1,8 @@
 package com.foodapp.controller;
 
 import com.foodapp.exception.EmptyCartException;
+import com.foodapp.exception.EmptyOrderException;
+import com.foodapp.exception.ItemNotFoundException;
 import com.foodapp.model.*;
 import com.foodapp.service.*;
 import com.foodapp.utils.IdGenerator;
@@ -30,12 +32,7 @@ public class CustomerController {
 
     private Scanner scanner = new Scanner(System.in);
 
-    public CustomerController(CustomerService customerService,
-                              MenuService menuService,
-                              OrderService orderService,
-                              CartService cartService,
-                              SessionManager sessionManager,
-                              DeliveryPartnerService deliveryPartnerService) {
+    public CustomerController(CustomerService customerService, MenuService menuService, OrderService orderService, CartService cartService, SessionManager sessionManager, DeliveryPartnerService deliveryPartnerService) {
 
         this.customerService = customerService;
         this.menuService = menuService;
@@ -49,7 +46,17 @@ public class CustomerController {
 
         int id = IdGenerator.getNextCustomerID();
         String name = InputValidation.readValidName(scanner, "Enter Customer Name: ");
-        String email = InputValidation.readValidEmail(scanner, "Enter Email: ");
+        String email;
+
+        while (true) {
+            email = InputValidation.readValidEmail(scanner, "Enter Email: ");
+            boolean isCustomerExists = customerService.checkCustomerExistByEmail(email);
+            if (!isCustomerExists) {
+                break;
+            }
+            System.out.println("Customer with same email id already exists!");
+        }
+
         String phone = InputValidation.readValidPhone(scanner, "Enter Phone: ");
 
         Customer customer = new Customer(id, name, email, phone);
@@ -62,12 +69,8 @@ public class CustomerController {
     public void login() {
 
         String email = InputValidation.readValidEmail(scanner, "Enter Customer Email Id: ");
-        Customer customer = customerService.findCustomerByEmail(email);
 
-        if (customer == null) {
-            System.out.println("Customer not found.");
-            return;
-        }
+        Customer customer = customerService.findCustomerByEmail(email);
 
         sessionManager.login(customer);
 
@@ -76,7 +79,7 @@ public class CustomerController {
         displayOption();
     }
 
-    public void logout() {
+    private void logout() {
 
         sessionManager.logout();
 
@@ -84,45 +87,44 @@ public class CustomerController {
     }
 
     private void displayOption() {
+        try {
+            while (sessionManager.isLoggedIn()) {
 
-        while (sessionManager.isLoggedIn()) {
+                printOptionMenu();
 
-            printOptionMenu();
+                int choice = InputValidation.readIntInRange(scanner, "Enter your choice: ", ADD_ITEM, LOGOUT
+//                        BACK
+                );
 
-            int choice = InputValidation.readIntInRange(
-                    scanner,
-                    "Enter your choice: ",
-                    ADD_ITEM,
-                    BACK
-            );
-
-            handleChoice(choice);
+                handleChoice(choice);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 
     private void handleChoice(int choice) {
+        try {
+            switch (choice) {
 
-        switch (choice) {
+                case ADD_ITEM -> addItemToCart();
 
-            case ADD_ITEM -> addItemToCart();
+                case SHOW_CART -> displayCart();
 
-            case SHOW_CART -> displayCart();
+                case REMOVE_ITEM -> removeItemFromCart();
 
-            case REMOVE_ITEM -> removeItemFromCart();
+                case UPDATE_CART -> updateCart();
 
-            case UPDATE_CART -> updateCart();
+                case PLACE_ORDER -> placeOrder();
 
-            case PLACE_ORDER -> placeOrder();
+                case VIEW_ORDERS -> getAllOrders();
 
-            case VIEW_ORDERS -> getAllOrders();
+                case LOGOUT -> logout();
 
-            case LOGOUT -> logout();
-
-            case BACK -> {
-                return;
+                default -> System.out.println("Invalid choice.");
             }
-
-            default -> System.out.println("Invalid choice.");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 
@@ -136,10 +138,9 @@ public class CustomerController {
         System.out.println("5. Place Order");
         System.out.println("6. View Orders");
         System.out.println("7. Logout");
-        System.out.println("8. Back");
     }
 
-    public void addItemToCart() {
+    private void addItemToCart() {
 
         Customer customer = sessionManager.getCurrentCustomer();
 
@@ -158,7 +159,7 @@ public class CustomerController {
 
         int id = IdGenerator.getNextOrderItemID();
 
-        double price = foodItem.getPrice() *  quantity;
+        double price = foodItem.getPrice() * quantity;
 
         OrderItem orderItem = new OrderItem(id, foodItem, quantity, price);
 
@@ -167,17 +168,22 @@ public class CustomerController {
         System.out.println("Item added to cart.");
     }
 
-    public void removeItemFromCart() {
+    private void removeItemFromCart() {
 
         Customer customer = sessionManager.getCurrentCustomer();
-        displayCart();
+
+        try {
+            displayCart();
+        } catch (Exception e) {
+            throw new EmptyCartException("No item found in cart.");
+        }
+
         int orderItemId = InputValidation.readPositiveInt(scanner, "Enter Order Item ID: ");
 
         OrderItem orderItem = cartService.getOrderItemFromCart(customer.getId(), orderItemId);
 
         if (orderItem == null) {
-            System.out.println("Food item not found.");
-            return;
+            throw new ItemNotFoundException("Order Item not found.");
         }
 
         cartService.removeOrderItemFromCart(customer.getId(), orderItem);
@@ -185,7 +191,7 @@ public class CustomerController {
         System.out.println("Item removed from cart.");
     }
 
-    public void updateCart() {
+    private void updateCart() {
 
         Customer customer = sessionManager.getCurrentCustomer();
         displayCart();
@@ -209,24 +215,20 @@ public class CustomerController {
         System.out.println("Cart updated successfully.");
     }
 
-    public void getAllOrders() {
+    private void getAllOrders() {
 
         Customer customer = sessionManager.getCurrentCustomer();
 
-        System.out.printf("%-10s %-15s %-15s %-20s%n",
-                "Order ID", "Total", "Payment", "Delivery Partner");
+        System.out.printf("%-10s %-15s %-15s %-20s%n", "Order ID", "Total", "Payment", "Delivery Partner");
 
         System.out.println("----------------------------------------------------");
+        List<Order> customerOrder = orderService.getOrdersByCustomer(customer);
 
-        orderService.getOrdersByCustomer(customer)
-                .forEach(order ->
-                        System.out.printf("%-10d %-15.2f %-15s %-20s%n",
-                                order.getId(),
-                                order.getFinalAmount(),
-                                order.getPaymentMode(),
-                                order.getDeliveryPartner().getName()
-                        )
-                );
+        if (customerOrder == null) {
+            throw new EmptyOrderException("No orders found.");
+        }
+
+        customerOrder.forEach(order -> System.out.printf("%-10d %-15.2f %-15s %-20s%n", order.getId(), order.getFinalAmount(), order.getPaymentMode(), order.getDeliveryPartner().getName()));
     }
 
     private void displayCart() {
@@ -238,23 +240,14 @@ public class CustomerController {
             throw new EmptyCartException("Cart is empty.");
         }
 
-        System.out.printf("%-12s %-20s %-10s %-15s %-15s%n",
-                "Item ID", "Item Name", "Quantity", "Unit Price", "Total Price");
+        System.out.printf("%-12s %-20s %-10s %-15s %-15s%n", "Item ID", "Item Name", "Quantity", "Unit Price", "Total Price");
 
         System.out.println("---------------------------------------------------------------------");
 
-        cart.forEach(orderItem ->
-                System.out.printf("%-12d %-20s %-10d %-15.2f %-15.2f%n",
-                        orderItem.getId(),
-                        orderItem.getFoodItem().getName(),
-                        orderItem.getQuantity(),
-                        orderItem.getFoodItem().getPrice(),
-                        orderItem.getPrice()
-                )
-        );
+        cart.forEach(orderItem -> System.out.printf("%-12d %-20s %-10d %-15.2f %-15.2f%n", orderItem.getId(), orderItem.getFoodItem().getName(), orderItem.getQuantity(), orderItem.getFoodItem().getPrice(), orderItem.getPrice()));
     }
 
-    public void placeOrder() {
+    private void placeOrder() {
 
         Customer customer = sessionManager.getCurrentCustomer();
 
@@ -275,15 +268,15 @@ public class CustomerController {
             return;
         }
 
-        System.out.println("Order placed successfully!");
+        System.out.println("\nOrder placed successfully!");
 
-        System.out.println("Assigning delivery partner.....");
+        System.out.println("\nAssigning delivery partner.....");
 
         orderService.assignDeliveryPartner(order);
 
-        System.out.println("Your delivery partner has been assigned.");
+        System.out.println("\nYour delivery partner has been assigned.");
 
-        System.out.println("Your delivery partner is " + order.getDeliveryPartner());
+        System.out.println("\nYour delivery partner is \n" + order.getDeliveryPartner());
 
         InvoicePrinter.printInvoice(order);
 
@@ -297,8 +290,7 @@ public class CustomerController {
         System.out.println("1. UPI");
         System.out.println("2. CASH");
 
-        int choice = InputValidation.readIntInRange(scanner,
-                "Enter payment option: ", 1, 2);
+        int choice = InputValidation.readIntInRange(scanner, "Enter payment option: ", 1, 2);
 
         return switch (choice) {
             case 1 -> PaymentMode.UPI;

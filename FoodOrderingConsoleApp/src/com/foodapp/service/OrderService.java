@@ -3,24 +3,22 @@ package com.foodapp.service;
 import com.foodapp.exception.EmptyCartException;
 import com.foodapp.exception.EmptyOrderException;
 import com.foodapp.model.*;
-import com.foodapp.repository.CartRepository;
-import com.foodapp.repository.OrderRepository;
+import com.foodapp.repository.InMemoryCartRepository;
+import com.foodapp.repository.InMemoryOrderRepository;
 import com.foodapp.utils.IdGenerator;
 
 import java.util.List;
 
 public class OrderService {
     private DeliveryPartnerService deliveryPartnerService;
-    private OrderRepository orderRepository;
-    private CartRepository cartRepository;
-    private PaymentService paymentService;
+    private InMemoryOrderRepository inMemoryOrderRepository;
+    private InMemoryCartRepository inMemoryCartRepository;
     private DiscountService discountService;
 
-    public OrderService(DeliveryPartnerService deliveryPartnerService, OrderRepository orderRepository, CartRepository cartRepository,  PaymentService paymentService, DiscountService discountService) {
+    public OrderService(DeliveryPartnerService deliveryPartnerService, InMemoryOrderRepository inMemoryOrderRepository, InMemoryCartRepository inMemoryCartRepository, DiscountService discountService) {
         this.deliveryPartnerService = deliveryPartnerService;
-        this.orderRepository = orderRepository;
-        this.cartRepository = cartRepository;
-        this.paymentService = paymentService;
+        this.inMemoryOrderRepository = inMemoryOrderRepository;
+        this.inMemoryCartRepository = inMemoryCartRepository;
         this.discountService = discountService;
     }
 
@@ -31,6 +29,10 @@ public class OrderService {
 
         if (customer == null) {
             throw new IllegalArgumentException("Customer cannot be null!");
+        }
+
+        if (deliveryPartnerService.getDeliveryPartners().isEmpty()) {
+            throw new IllegalArgumentException("There is no delivery partner available, so for now you can't place order!");
         }
 
         int id = IdGenerator.getNextOrderID();
@@ -55,6 +57,8 @@ public class OrderService {
             throw new EmptyOrderException("Something went wrong while placing order!");
         }
 
+        inMemoryOrderRepository.addOrder(order);
+
         return order;
     }
 
@@ -69,7 +73,7 @@ public class OrderService {
     public List<Order> getOrdersByCustomer(Customer customer) {
          int customerId = customer.getId();
 
-         return orderRepository.getAllOrders()
+         return inMemoryOrderRepository.getAllOrders()
                  .stream()
                  .filter(order -> order.getCustomer().getId() == customerId)
                  .toList();

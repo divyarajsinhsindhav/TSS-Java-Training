@@ -44,4 +44,8 @@ public class OrderItem {
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
 }

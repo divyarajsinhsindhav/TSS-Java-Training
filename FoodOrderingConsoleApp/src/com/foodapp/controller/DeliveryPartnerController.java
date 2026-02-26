@@ -18,10 +18,13 @@ public class DeliveryPartnerController {
     }
 
     public void getDeliveryPartnersOrder() {
-        int deliveryPartnerId = InputValidation.readPositiveInt(scanner, "Enter your id: ");
-        deliveryPartnerService.getOrderByDeliveryPartner(deliveryPartnerId)
+        String deliveryPartnerEmail = InputValidation.readValidEmail(scanner, "Enter your email: ");
+        deliveryPartnerService.getOrdersByDeliveryPartner(deliveryPartnerEmail)
                 .stream()
-                .forEach(System.out::println);
+                .forEach(order -> {
+                    System.out.println(order);
+                });
+
     }
 
     public void assignDeliveryPartner(Order order) {

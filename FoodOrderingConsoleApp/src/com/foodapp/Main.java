@@ -25,25 +25,20 @@ public class Main {
 
     private static void initialize() {
 
-        // Repositories
-        CustomerRepository customerRepository = new CustomerRepository();
-        CartRepository cartRepository = new CartRepository();
-        OrderRepository orderRepository = new OrderRepository();
-        DeliveryPartnerRepository deliveryPartnerRepository = new DeliveryPartnerRepository();
+        InMemoryCustomerRepository inMemoryCustomerRepository = new InMemoryCustomerRepository();
+        InMemoryCartRepository inMemoryCartRepository = new InMemoryCartRepository();
+        InMemoryOrderRepository inMemoryOrderRepository = new InMemoryOrderRepository();
+        InMemoryDeliveryPartnerRepository inMemoryDeliveryPartnerRepository = new InMemoryDeliveryPartnerRepository();
 
-        // Services
-        CustomerService customerService = new CustomerService(customerRepository);
-        CartService cartService = new CartService(cartRepository, customerService);
+        CustomerService customerService = new CustomerService(inMemoryCustomerRepository);
+        CartService cartService = new CartService(inMemoryCartRepository, customerService);
         MenuService menuService = new MenuService();
-        PaymentService paymentService = new PaymentService();
-        DeliveryPartnerService deliveryPartnerService = new DeliveryPartnerService(deliveryPartnerRepository);
+        DeliveryPartnerService deliveryPartnerService = new DeliveryPartnerService(inMemoryDeliveryPartnerRepository, inMemoryOrderRepository);
         DiscountService discountService = new DiscountService();
-        OrderService orderService = new OrderService(deliveryPartnerService, orderRepository, cartRepository, paymentService, discountService);
+        OrderService orderService = new OrderService(deliveryPartnerService, inMemoryOrderRepository, inMemoryCartRepository, discountService);
 
-        // Session Manager
         SessionManager sessionManager = new SessionManager();
 
-        // Controllers
         adminController = new AdminController(menuService, deliveryPartnerService);
 
         customerController = new CustomerController(
@@ -98,19 +93,27 @@ public class Main {
     private static void customer() {
 
         Scanner scanner = new Scanner(System.in);
+        while (true) {
+            try {
+                System.out.println("\n===== CUSTOMER MENU =====");
+                System.out.println("1. Register");
+                System.out.println("2. Login");
+                System.out.println("3. Back");
 
-        System.out.println("\n===== CUSTOMER MENU =====");
-        System.out.println("1. Register");
-        System.out.println("2. Login");
-        System.out.println("3. Back");
+                int choice = InputValidation.readIntInRange(scanner,
+                        "Enter your choice: ", 1, 3);
 
-        int choice = InputValidation.readIntInRange(scanner,
-                "Enter your choice: ", 1, 3);
-
-        switch (choice) {
-            case 1 -> customerController.createCustomer();
-            case 2 -> customerController.login();
-            case 3 -> System.out.println("Returning...");
+                switch (choice) {
+                    case 1 -> customerController.createCustomer();
+                    case 2 -> customerController.login();
+                    case 3 -> {
+                        System.out.println("Exiting application...");
+                        return;
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
         }
     }
 

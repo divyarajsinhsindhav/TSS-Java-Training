@@ -32,18 +32,22 @@ public class AdminController {
     }
 
     public void displayOptions() {
-        while (true) {
-            printMenu();
+        try {
+            while (true) {
+                printMenu();
 
-            int choice = InputValidation.readIntInRange(scanner,
-                    "Enter your choice: ", ADD_ITEM, BACK);
+                int choice = InputValidation.readIntInRange(scanner,
+                        "Enter your choice: ", ADD_ITEM, BACK);
 
-            if (choice == BACK) {
-                System.out.println("Returning to previous menu...");
-                return;
+                if (choice == BACK) {
+                    System.out.println("Returning to previous menu...");
+                    return;
+                }
+
+                handleChoice(choice);
             }
-
-            handleChoice(choice);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 
@@ -83,8 +87,9 @@ public class AdminController {
 
     private void addItemInMenu() {
         System.out.println("\n--- Add Item In Menu ---");
+
         menuController.displayCategory();
-        int categoryId = InputValidation.readPositiveInt(scanner, "Enter category id: ");
+        int categoryId = InputValidation.readPositiveZeroInt(scanner, "Enter category id: ");
 
         int foodItemId = IdGenerator.getNextItemID();
         String itemName = InputValidation.readValidName(scanner, "Enter item name: ");

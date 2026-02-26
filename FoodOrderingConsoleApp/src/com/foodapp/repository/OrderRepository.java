@@ -2,28 +2,13 @@ package com.foodapp.repository;
 
 import com.foodapp.model.Order;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class OrderRepository {
+public interface OrderRepository {
 
-    private List<Order> orders = new ArrayList<>();
+    void addOrder(Order order);
 
-    public void addOrder(Order order) {
-        if (order == null) {
-            throw new IllegalArgumentException("Order cannot be null");
-        }
-        orders.add(order);
-    }
+    void removeOrder(Order order);
 
-    public void removeOrder(Order order) {
-        if (order == null) {
-            throw new IllegalArgumentException("Order cannot be null");
-        }
-        orders.remove(order);
-    }
-
-    public List<Order> getAllOrders() {
-        return new ArrayList<>(orders);
-    }
+    List<Order> getAllOrders();
 }

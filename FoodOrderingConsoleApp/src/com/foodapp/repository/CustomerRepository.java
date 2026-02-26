@@ -2,27 +2,13 @@ package com.foodapp.repository;
 
 import com.foodapp.model.Customer;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class CustomerRepository {
-    private List<Customer> customers = new ArrayList<>();
+public interface CustomerRepository {
 
-    public void addCustomer(Customer customer) {
-        if (customer == null) {
-            throw new IllegalArgumentException("Customer cannot be null");
-        }
-        customers.add(customer);
-    }
+    void addCustomer(Customer customer);
 
-    public void removeCustomer(Customer customer) {
-        if (customer == null) {
-            throw new IllegalArgumentException("Customer cannot be null");
-        }
-        customers.remove(customer);
-    }
+    void removeCustomer(Customer customer);
 
-    public List<Customer> getCustomers() {
-        return new ArrayList<>(customers);
-    }
+    List<Customer> getCustomers();
 }

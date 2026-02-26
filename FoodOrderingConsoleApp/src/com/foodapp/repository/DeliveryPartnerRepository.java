@@ -2,27 +2,13 @@ package com.foodapp.repository;
 
 import com.foodapp.model.DeliveryPartner;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class DeliveryPartnerRepository {
-    List<DeliveryPartner> deliveryPartners = new ArrayList<>();
+public interface DeliveryPartnerRepository {
 
-    public void addDeliveryPartner(DeliveryPartner deliveryPartner) {
-        if(deliveryPartner == null){
-            throw new IllegalArgumentException("Delivery Partner cannot be null");
-        }
-        deliveryPartners.add(deliveryPartner);
-    }
+    void addDeliveryPartner(DeliveryPartner deliveryPartner);
 
-    public void removeDeliveryPartner(DeliveryPartner deliveryPartner) {
-        if(deliveryPartner == null){
-            throw new IllegalArgumentException("Delivery Partner cannot be null");
-        }
-        deliveryPartners.remove(deliveryPartner);
-    }
+    void removeDeliveryPartner(DeliveryPartner deliveryPartner);
 
-    public List<DeliveryPartner> getAllDeliveryPartners() {
-        return new ArrayList<>(deliveryPartners);
-    }
+    List<DeliveryPartner> getAllDeliveryPartners();
 }

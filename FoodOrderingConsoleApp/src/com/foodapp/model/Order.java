@@ -63,4 +63,18 @@ public class Order {
     public void setDeliveryPartner(DeliveryPartner deliveryPartner) {
         this.deliveryPartner = deliveryPartner;
     }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", customer=" + customer +
+                ", orderItems=" + orderItems +
+                ", total=" + total +
+                ", discountRate=" + discountRate +
+                ", mode=" + mode +
+                ", deliveryPartner=" + deliveryPartner +
+                ", finalAmount=" + finalAmount +
+                '}';
+    }
 }
