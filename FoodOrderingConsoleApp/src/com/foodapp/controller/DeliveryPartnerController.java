@@ -27,12 +27,4 @@ public class DeliveryPartnerController {
 
     }
 
-    public void assignDeliveryPartner(Order order) {
-        DeliveryPartner deliveryPartner = deliveryPartnerService.assignDeliveryPartnerRandomly();
-        if (deliveryPartner == null) {
-            throw new NullPointerException("No delivery partner found");
-        }
-        order.setDeliveryPartner(deliveryPartner);
-    }
-
 }
