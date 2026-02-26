@@ -1,45 +1,29 @@
 package com.foodapp.model;
 
 public class Customer extends User {
-    private int id;
+
+    private String phone;
     private String address;
 
-    public Customer() {
-        if (id <= 0) {
-            throw new IllegalArgumentException("Customer id must be greater than 0");
+    public Customer(int id, String name, String email, String password,
+                    String phone, String address) {
+
+        super(id, name, email, password, UserType.CUSTOMER);
+
+        if (phone == null || phone.isBlank()) {
+            throw new IllegalArgumentException("Phone cannot be null or empty");
         }
 
-        if (name == null || name.length() == 0) {
-            throw new IllegalArgumentException("Customer name cannot be null or empty");
-        }
-
-        if (email == null || email.isEmpty()) {
-            throw new IllegalArgumentException("Customer email cannot be null or empty");
-        }
-
-        if (phone == null || phone.isEmpty()) {
-            throw new IllegalArgumentException("Customer phone number must be greater than 0");
-        }
-        this.id = id;
-        this.name = name;
-        this.email = email;
         this.phone = phone;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getEmail() {
-        return email;
+        this.address = address;
     }
 
     public String getPhone() {
         return phone;
+    }
+
+    public String getAddress() {
+        return address;
     }
 
     @Override
