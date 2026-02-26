@@ -103,7 +103,7 @@ public class CustomerController {
 
     private void addItemToCart() {
 
-        Customer customer = sessionManager.getCurrentCustomer();
+        User customer = sessionManager.getCurrentCustomer();
 
         menuService.displayMenu();
 
@@ -131,7 +131,7 @@ public class CustomerController {
 
     private void removeItemFromCart() {
 
-        Customer customer = sessionManager.getCurrentCustomer();
+        User customer = sessionManager.getCurrentCustomer();
 
         try {
             displayCart();
@@ -154,7 +154,7 @@ public class CustomerController {
 
     private void updateCart() {
 
-        Customer customer = sessionManager.getCurrentCustomer();
+        User customer = sessionManager.getCurrentCustomer();
         displayCart();
         int foodId = InputValidation.readPositiveInt(scanner, "Enter Food Item ID: ");
 
@@ -178,7 +178,7 @@ public class CustomerController {
 
     private void getAllOrders() {
 
-        Customer customer = sessionManager.getCurrentCustomer();
+        User customer = sessionManager.getCurrentCustomer();
 
         System.out.printf("%-10s %-15s %-15s %-20s%n", "Order ID", "Total", "Payment", "Delivery Partner");
 
@@ -194,7 +194,7 @@ public class CustomerController {
 
     private void displayCart() {
 
-        Customer customer = sessionManager.getCurrentCustomer();
+        User customer = sessionManager.getCurrentCustomer();
         List<OrderItem> cart = cartService.getCart(customer.getId());
 
         if (cart == null || cart.isEmpty()) {
@@ -206,11 +206,15 @@ public class CustomerController {
         System.out.println("---------------------------------------------------------------------");
 
         cart.forEach(orderItem -> System.out.printf("%-12d %-20s %-10d %-15.2f %-15.2f%n", orderItem.getId(), orderItem.getFoodItem().getName(), orderItem.getQuantity(), orderItem.getFoodItem().getPrice(), orderItem.getPrice()));
+
+        double totalAmount = cart.stream().mapToDouble(orderItem -> orderItem.getFoodItem().getPrice()).sum();
+
+        System.out.println("Total Amount: " +  totalAmount);
     }
 
     private void placeOrder() {
 
-        Customer customer = sessionManager.getCurrentCustomer();
+        User customer = sessionManager.getCurrentCustomer();
 
         List<OrderItem> cart = cartService.getCart(customer.getId());
 
@@ -243,7 +247,6 @@ public class CustomerController {
 
         cartService.clearCustomerCart(customer.getId());
     }
-
 
     private PaymentMode handlePayment() {
 

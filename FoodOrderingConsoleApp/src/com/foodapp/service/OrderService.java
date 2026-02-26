@@ -22,7 +22,7 @@ public class OrderService {
         this.discountService = discountService;
     }
 
-    public Order placeOrder(Customer customer, PaymentMode mode, List<OrderItem> Cart) {
+    public Order placeOrder(User customer, PaymentMode mode, List<OrderItem> Cart) {
         if (Cart.isEmpty()) {
             throw new EmptyCartException("There is nothing to place order!");
         }
@@ -70,7 +70,7 @@ public class OrderService {
         return 0;
     }
 
-    public List<Order> getOrdersByCustomer(Customer customer) {
+    public List<Order> getOrdersByCustomer(User customer) {
          int customerId = customer.getId();
 
          return inMemoryOrderRepository.getAllOrders()

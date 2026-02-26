@@ -145,4 +145,43 @@ public class InputValidation {
             System.out.println("Input cannot be empty.");
         }
     }
+
+    public static String readValidPassword(Scanner scanner, String message) {
+        String password;
+
+        while (true) {
+            System.out.print(message);
+            password = scanner.nextLine();
+
+            boolean lengthValid = password.length() >= 8;
+            boolean hasUpper = password.matches(".*[A-Z].*");
+            boolean hasLower = password.matches(".*[a-z].*");
+            boolean hasDigit = password.matches(".*\\d.*");
+
+            if (lengthValid && hasUpper && hasLower && hasDigit) {
+                return password;
+            } else {
+                System.out.println("Invalid password!");
+                System.out.println("Password must:");
+                System.out.println("- Be at least 8 characters long");
+                System.out.println("- Contain uppercase and lowercase letters");
+                System.out.println("- Contain at least one digit");
+            }
+        }
+    }
+
+    public static boolean doUserWantToContinue(Scanner scanner, String message) {
+        while (true) {
+            System.out.print(message + " (y/n): ");
+            String input = scanner.nextLine().trim().toLowerCase();
+
+            if (input.equals("y") || input.equals("yes")) {
+                return true;
+            } else if (input.equals("n") || input.equals("no")) {
+                return false;
+            } else {
+                System.out.println("Invalid input. Please enter 'y' or 'n'.");
+            }
+        }
+    }
 }

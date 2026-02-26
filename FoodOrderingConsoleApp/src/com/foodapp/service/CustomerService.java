@@ -1,6 +1,7 @@
 package com.foodapp.service;
 
 import com.foodapp.model.Customer;
+import com.foodapp.model.User;
 import com.foodapp.repository.InMemoryCustomerRepository;
 import com.foodapp.repository.UserRepository;
 
@@ -11,15 +12,11 @@ public class CustomerService {
         this.userRepository = userRepository;
     }
 
-    public Customer findCustomerById(int id) {
-        return userRepository.getCustomers().stream().filter(customer -> customer.getId() == id).findFirst().orElseThrow(() -> new IllegalArgumentException("Customer with id " + id + " does not exist"));
+    public User findCustomerById(int id) {
+        return userRepository.getCustomerById(id);
     }
 
-    public Customer findCustomerByEmail(String email) {
-        return userRepository.getCustomers().stream().filter(customer -> customer.getEmail().equals(email.trim())).findFirst().orElseThrow(() -> new IllegalArgumentException("Customer with email " + email + " does not exist"));
-    }
-
-    public boolean checkCustomerExistByEmail(String email) {
-        return userRepository.getCustomers().stream().anyMatch(customer -> customer.getEmail().equals(email.trim()));
+    public User findCustomerByEmail(String email) {
+        return userRepository.getUserByEmail(email);
     }
 }

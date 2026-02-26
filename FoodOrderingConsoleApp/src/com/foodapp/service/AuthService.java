@@ -19,7 +19,7 @@ public class AuthService {
         userRepository.addUser(user);
     }
 
-    public void login(String email, String password) {
+    public User login(String email, String password) {
         User user = userRepository.getUserByEmail(email);
         if (user == null) {
             throw new IllegalArgumentException("User not found");
@@ -28,5 +28,6 @@ public class AuthService {
             throw new IllegalArgumentException("Incorrect password");
         }
 
+        return user;
     }
 }

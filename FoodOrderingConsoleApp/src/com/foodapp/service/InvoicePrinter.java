@@ -12,8 +12,8 @@ public class InvoicePrinter {
         System.out.println("                FOOD APP INVOICE              ");
         System.out.println("==============================================");
 
-        Customer customer = order.getCustomer();
-        DeliveryPartner partner = order.getDeliveryPartner();
+        Customer customer = (Customer) order.getCustomer();
+        DeliveryPartner partner = (DeliveryPartner) order.getDeliveryPartner();
 
         System.out.println("Order ID      : " + order.getId());
         System.out.println("Customer Name : " + customer.getName());

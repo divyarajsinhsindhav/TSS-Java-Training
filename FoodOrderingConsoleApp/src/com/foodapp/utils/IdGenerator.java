@@ -13,6 +13,7 @@ public class IdGenerator {
     private static int customerIDCounter = 1000;
     private static int orderIDCounter = 1000;
     private static int orderItemIDCounter = 1000;
+    private static int userIDCounter = 1000;
 
     private IdGenerator() { }
 
@@ -46,5 +47,9 @@ public class IdGenerator {
 
     public static int getNextOrderItemID() {
         return ++orderItemIDCounter;
+    }
+
+    public static int getNextUserID() {
+        return ++userIDCounter;
     }
 }

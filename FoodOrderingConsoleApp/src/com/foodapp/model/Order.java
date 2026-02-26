@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Order {
     private int  id;
-    private Customer customer;
+    private User customer;
     private List<OrderItem> orderItems;
     private double total;
     private double discountRate;
@@ -12,7 +12,7 @@ public class Order {
     private DeliveryPartner deliveryPartner;
     private double finalAmount;
 
-    public Order(int id, List<OrderItem> orderItems, Customer customer,
+    public Order(int id, List<OrderItem> orderItems, User customer,
                  double total, double discountRate, PaymentMode mode,
                 double finalAmount) {
         this.id = id;
@@ -32,7 +32,7 @@ public class Order {
         return orderItems;
     }
 
-    public Customer getCustomer() {
+    public User getCustomer() {
         return customer;
     }
 
@@ -48,7 +48,7 @@ public class Order {
         return mode;
     }
 
-    public DeliveryPartner getDeliveryPartner() {
+    public User getDeliveryPartner() {
         return deliveryPartner;
     }
 
@@ -56,7 +56,7 @@ public class Order {
         return finalAmount;
     }
 
-    public void setCustomer(Customer customer) {
+    public void setCustomer(User customer) {
         this.customer = customer;
     }
 
