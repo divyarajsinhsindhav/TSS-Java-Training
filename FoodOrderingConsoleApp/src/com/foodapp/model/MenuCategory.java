@@ -38,10 +38,19 @@ public class MenuCategory implements Menu {
 
     @Override
     public void render(String indent) {
+
         System.out.println(indent + category);
 
-        for (Menu item : items) {
-            item.render(indent + "   ");
+        for (int i = 0; i < items.size(); i++) {
+
+            Menu item = items.get(i);
+            boolean isLast = (i == items.size() - 1);
+
+            String branch = isLast ? "└── " : "├── ";
+            String childIndent = indent + (isLast ? "    " : "│   ");
+
+            System.out.print(indent + branch);
+            item.render(childIndent);
         }
     }
 }

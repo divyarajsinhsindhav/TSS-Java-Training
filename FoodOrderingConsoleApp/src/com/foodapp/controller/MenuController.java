@@ -10,24 +10,47 @@ public class MenuController {
 
     public void displayMenu() {
 
+        System.out.println("\n==================================================");
+        System.out.println("                     RESTAURANT MENU                ");
+        System.out.println("==================================================\n");
+
+        menuService.displayMenu();
+
+        System.out.println("\n==================================================");
     }
 
     public void displayItems() {
-        menuService.getFoodItems()
-                .stream()
-                .forEach(foodItem -> {
-                    System.out.println("Id: " +  foodItem.getId() +
-                            "\nItem: " + foodItem.getName() +
-                            "\nPrice: " + foodItem.getPrice());
-                });
+
+        System.out.println("\n+--------------------------------------------------+");
+        System.out.println("|                    FOOD ITEMS                    |");
+        System.out.println("+------+------------------------------+------------+");
+        System.out.printf("| %-4s | %-28s | %-10s |%n", "ID", "ITEM NAME", "PRICE");
+        System.out.println("+------+------------------------------+------------+");
+
+        menuService.getFoodItems().forEach(foodItem -> {
+            System.out.printf("| %-4d | %-28s | %-10.2f |%n",
+                    foodItem.getId(),
+                    foodItem.getName(),
+                    foodItem.getPrice());
+        });
+
+        System.out.println("+------+------------------------------+------------+");
     }
 
     public void displayCategory() {
+
+        System.out.println("\n=========== MENU CATEGORIES ===========");
+
+        System.out.printf("%-10s %-30s%n", "ID", "CATEGORY");
+        System.out.println("---------------------------------------");
+
         menuService.getCategory()
-                .stream()
                 .forEach(category -> {
-                    System.out.println("Id: " + category.getId() +
-                            "->: " + category.getCategory());
+                    System.out.printf("%-10d %-30s%n",
+                            category.getId(),
+                            category.getCategory());
                 });
+
+        System.out.println("---------------------------------------");
     }
 }

@@ -2,6 +2,7 @@ package com.foodapp.service;
 
 import com.foodapp.model.Customer;
 import com.foodapp.model.OrderItem;
+import com.foodapp.model.User;
 import com.foodapp.repository.InMemoryCartRepository;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public class CartService {
         if (customerId == null) {
             throw new IllegalArgumentException("Customer Id cannot be null");
         }
-        Customer customer = customerService.findCustomerById(customerId);
+        User customer = customerService.findCustomerById(customerId);
         if (customer == null) {
             throw new IllegalArgumentException("Customer not found");
         }
@@ -32,7 +33,7 @@ public class CartService {
 
     public OrderItem getOrderItemFromCart(Integer customerId, int orderItemId) {
 
-        Customer customer = customerService.findCustomerById(customerId);
+        User customer = customerService.findCustomerById(customerId);
 
         if (customer == null) {
             throw new IllegalArgumentException("Customer not found");
@@ -53,7 +54,7 @@ public class CartService {
         if (customerId == null) {
             throw new IllegalArgumentException("Customer Id cannot be null");
         }
-        Customer customer = customerService.findCustomerById(customerId);
+        User customer = customerService.findCustomerById(customerId);
         if (customer == null) {
             throw new IllegalArgumentException("Customer not found");
         }
@@ -69,7 +70,7 @@ public class CartService {
             throw new IllegalArgumentException("Customer Id cannot be null");
         }
 
-        Customer customer = customerService.findCustomerById(customerId);
+        User customer = customerService.findCustomerById(customerId);
 
         OrderItem itemFromCart = inMemoryCartRepository.getCart(customerId)
                 .stream()
@@ -89,7 +90,7 @@ public class CartService {
     }
 
     public List<OrderItem> getCart(Integer customerId) {
-        Customer customer = customerService.findCustomerById(customerId);
+        User customer = customerService.findCustomerById(customerId);
         if (customer == null) {
             throw new IllegalArgumentException("Customer not found");
         }
@@ -98,7 +99,7 @@ public class CartService {
     }
 
     public void clearCustomerCart(Integer customerId) {
-        Customer customer = customerService.findCustomerById(customerId);
+        User customer = customerService.findCustomerById(customerId);
         if (customer == null) {
             throw new IllegalArgumentException("Customer not found");
         }

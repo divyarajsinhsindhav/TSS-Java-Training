@@ -41,7 +41,11 @@ public class MenuService {
     }
 
     public void displayMenu() {
+        System.out.println("\n==================================================");
+        System.out.println("                     RESTAURANT MENU                ");
+        System.out.println("==================================================\n");
         root.render("");
+        System.out.println("\n==================================================");
     }
 
     private MenuCategory findCategoryById(Menu menu, int id) {
@@ -58,6 +62,30 @@ public class MenuService {
                 .stream()
                 .map(child -> findCategoryById(child, id))
                 .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(null);
+    }
+
+    public MenuCategory findCategoryByName(int parentCategoryId, String name) {
+        MenuCategory parentCategory = findCategoryById(root, parentCategoryId);
+        if (parentCategory == null || name == null) {
+            return null;
+        }
+
+        return parentCategory.getMenu().stream()
+                .filter(item -> item instanceof MenuCategory)
+                .map(item -> (MenuCategory) item)
+                .filter(c -> c.getCategory().equalsIgnoreCase(name.trim()))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public FoodItem findFoodItemByName(String name) {
+        if (name == null) {
+            return null;
+        }
+        return getFoodItems().stream()
+                .filter(n -> n.getName().equalsIgnoreCase(name.trim()))
                 .findFirst()
                 .orElse(null);
     }
@@ -88,7 +116,7 @@ public class MenuService {
 
     public Menu getMenu()  {
         return root;
-    };
+    }
 
     public List<FoodItem> getFoodItems() {
         List<FoodItem> items = new ArrayList<>();

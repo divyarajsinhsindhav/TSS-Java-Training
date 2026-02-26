@@ -1,6 +1,7 @@
 package com.foodapp.service;
 
 import com.foodapp.model.DeliveryPartner;
+import com.foodapp.model.DeliveryPartnerStatus;
 import com.foodapp.model.Order;
 import com.foodapp.repository.InMemoryDeliveryPartnerRepository;
 import com.foodapp.repository.InMemoryOrderRepository;
@@ -63,7 +64,10 @@ public class DeliveryPartnerService {
 
     public DeliveryPartner assignDeliveryPartnerRandomly() {
 
-        List<DeliveryPartner> partners = userRepository.getDeliveryPartners();
+        List<DeliveryPartner> partners = userRepository.getDeliveryPartners()
+                .stream()
+                .filter(deliveryPartner -> deliveryPartner.getStatus() != DeliveryPartnerStatus.INACTIVE)
+                .toList();
 
         if (partners.isEmpty()) {
             throw new IllegalStateException("No delivery partners available");
@@ -107,5 +111,12 @@ public class DeliveryPartnerService {
                 .collect(Collectors.toList());
 
         return orders.isEmpty() ? Collections.emptyList() : orders;
+    }
+
+    public void changeDeliveryPartnerStatus(DeliveryPartner deliveryPartner,  DeliveryPartnerStatus status) {
+        if (deliveryPartner == null) {
+            throw new IllegalArgumentException("DeliveryPartner cannot be null");
+        }
+        deliveryPartner.setStatus(status);
     }
 }

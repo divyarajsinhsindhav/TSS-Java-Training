@@ -1,9 +1,16 @@
 package com.foodapp;
 
 import com.foodapp.controller.AdminController;
+import com.foodapp.controller.AuthController;
 import com.foodapp.controller.CustomerController;
 import com.foodapp.controller.DeliveryPartnerController;
+import com.foodapp.model.DeliveryPartner;
+import com.foodapp.model.UserType;
 import com.foodapp.repository.*;
+import com.foodapp.seeder.AdminSeeder;
+import com.foodapp.seeder.CustomerSeeder;
+import com.foodapp.seeder.DeliveryPartnerSeeder;
+import com.foodapp.seeder.MenuSeeder;
 import com.foodapp.service.*;
 import com.foodapp.utils.InputValidation;
 import com.foodapp.utils.SessionManager;
@@ -15,12 +22,18 @@ public class Main {
     private static AdminController adminController;
     private static CustomerController customerController;
     private static DeliveryPartnerController deliveryPartnerController;
+    private static AuthController authController;
+    private static MenuSeeder menuSeeder;
 
     public static void main(String[] args) {
 
         initialize();
 
         start();
+    }
+
+    private static void dataSeeder() {
+
     }
 
     private static void initialize() {
@@ -35,6 +48,7 @@ public class Main {
         DeliveryPartnerService deliveryPartnerService = new DeliveryPartnerService(userRepository, inMemoryOrderRepository);
         DiscountService discountService = new DiscountService();
         OrderService orderService = new OrderService(deliveryPartnerService, inMemoryOrderRepository, inMemoryCartRepository, discountService);
+        AuthService authService = new AuthService(userRepository);
 
         SessionManager sessionManager = SessionManager.getSessionManager();
 
@@ -49,7 +63,14 @@ public class Main {
                 deliveryPartnerService
         );
 
-        deliveryPartnerController = new DeliveryPartnerController(deliveryPartnerService);
+        deliveryPartnerController = new DeliveryPartnerController(deliveryPartnerService, sessionManager);
+
+        authController = new AuthController(userRepository, authService, sessionManager);
+
+        MenuSeeder.seed(menuService);
+        AdminSeeder.seed(authService);
+        CustomerSeeder.seed(authService);
+        DeliveryPartnerSeeder.seed(authService);
     }
 
     private static void start() {
@@ -87,34 +108,43 @@ public class Main {
     }
 
     private static void registerAdmin() {
-
+        authController.registerUser(UserType.ADMIN);
     }
 
     private static void registerCustomer() {
-
+        authController.registerUser(UserType.CUSTOMER);
     }
 
     private static void registerDeliveryPartner() {
-
+        authController.registerUser(UserType.DELIVERY_PARTNER);
     }
 
     private static void login() {
-        Scanner scanner = new Scanner(System.in);
-
-        String email = InputValidation.readValidEmail(scanner, "Enter your email: ");
-
+        UserType userType = authController.loginUser().getRole();
+        if (userType == null) {
+            throw new IllegalArgumentException("Invalid user role");
+        }
+        try {
+            switch (userType) {
+                case ADMIN -> admin();
+                case CUSTOMER -> customer();
+                case DELIVERY_PARTNER -> deliveryPartner();
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
 
-//    private static void admin() {
-//        adminController.displayOptions();
-//    }
-//
-//    private static void customer() {
-//        customerController.displayOption();
-//    }
-//
-//    private static void deliveryPartner() {
-//        deliveryPartnerController.getDeliveryPartnersOrder();
-//    }
+    private static void admin() {
+        adminController.displayOptions();
+    }
+
+    private static void customer() {
+        customerController.displayOption();
+    }
+
+    private static void deliveryPartner() {
+        deliveryPartnerController.getDeliveryPartnersOrder();
+    }
 }

@@ -42,6 +42,10 @@ public class FoodItem implements Menu {
 
     @Override
     public void render(String indent) {
-        System.out.println(indent + id + "." + name + " - ₹" + price);
+
+        System.out.printf("%-4d %-28s ₹%-8.2f%n",
+                id,
+                name,
+                price);
     }
 }
