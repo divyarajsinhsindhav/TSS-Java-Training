@@ -25,19 +25,18 @@ public class Main {
 
     private static void initialize() {
 
-        InMemoryCustomerRepository inMemoryCustomerRepository = new InMemoryCustomerRepository();
+        UserRepository userRepository = new InMemoryUserRepository();
         InMemoryCartRepository inMemoryCartRepository = new InMemoryCartRepository();
         InMemoryOrderRepository inMemoryOrderRepository = new InMemoryOrderRepository();
-        InMemoryDeliveryPartnerRepository inMemoryDeliveryPartnerRepository = new InMemoryDeliveryPartnerRepository();
 
-        CustomerService customerService = new CustomerService(inMemoryCustomerRepository);
+        CustomerService customerService = new CustomerService(userRepository);
         CartService cartService = new CartService(inMemoryCartRepository, customerService);
         MenuService menuService = new MenuService();
-        DeliveryPartnerService deliveryPartnerService = new DeliveryPartnerService(inMemoryDeliveryPartnerRepository, inMemoryOrderRepository);
+        DeliveryPartnerService deliveryPartnerService = new DeliveryPartnerService(userRepository, inMemoryOrderRepository);
         DiscountService discountService = new DiscountService();
         OrderService orderService = new OrderService(deliveryPartnerService, inMemoryOrderRepository, inMemoryCartRepository, discountService);
 
-        SessionManager sessionManager = new SessionManager();
+        SessionManager sessionManager = SessionManager.getSessionManager();
 
         adminController = new AdminController(menuService, deliveryPartnerService);
 
@@ -60,21 +59,22 @@ public class Main {
         while (true) {
 
             System.out.println("\n===== FOOD ORDERING SYSTEM =====");
-            System.out.println("1. Admin");
-            System.out.println("2. Customer");
-            System.out.println("3. Delivery Partner");
-            System.out.println("4. Exit");
+            System.out.println("1. Register as Admin");
+            System.out.println("2. Register as Customer");
+            System.out.println("3. Register as DeliveryPartner");
+            System.out.println("4. Login");
+            System.out.println("5. Exit");
 
-            int choice = InputValidation.readIntInRange(scanner,
-                    "Enter your choice: ", 1, 4);
+            int choice = InputValidation.readIntInRange(scanner, "Enter your choice: ", 1, 5);
 
             try {
 
                 switch (choice) {
-                    case 1 -> admin();
-                    case 2 -> customer();
-                    case 3 -> deliveryPartner();
-                    case 4 -> {
+                    case 1 -> registerAdmin();
+                    case 2 -> registerCustomer();
+                    case 3 -> registerDeliveryPartner();
+                    case 4 -> login();
+                    case 5 -> {
                         System.out.println("Exiting application...");
                         return;
                     }
@@ -86,38 +86,35 @@ public class Main {
         }
     }
 
-    private static void admin() {
-        adminController.displayOptions();
+    private static void registerAdmin() {
+
     }
 
-    private static void customer() {
+    private static void registerCustomer() {
 
+    }
+
+    private static void registerDeliveryPartner() {
+
+    }
+
+    private static void login() {
         Scanner scanner = new Scanner(System.in);
-        while (true) {
-            try {
-                System.out.println("\n===== CUSTOMER MENU =====");
-                System.out.println("1. Register");
-                System.out.println("2. Login");
-                System.out.println("3. Back");
 
-                int choice = InputValidation.readIntInRange(scanner,
-                        "Enter your choice: ", 1, 3);
+        String email = InputValidation.readValidEmail(scanner, "Enter your email: ");
 
-                switch (choice) {
-                    case 1 -> customerController.createCustomer();
-                    case 2 -> customerController.login();
-                    case 3 -> {
-                        System.out.println("Exiting application...");
-                        return;
-                    }
-                }
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-        }
     }
 
-    private static void deliveryPartner() {
-        deliveryPartnerController.getDeliveryPartnersOrder();
-    }
+
+//    private static void admin() {
+//        adminController.displayOptions();
+//    }
+//
+//    private static void customer() {
+//        customerController.displayOption();
+//    }
+//
+//    private static void deliveryPartner() {
+//        deliveryPartnerController.getDeliveryPartnersOrder();
+//    }
 }

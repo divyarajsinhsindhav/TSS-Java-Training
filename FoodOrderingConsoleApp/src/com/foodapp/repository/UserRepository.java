@@ -8,9 +8,9 @@ import com.foodapp.model.User;
 import java.util.List;
 
 public interface UserRepository {
-    void addUser(Customer customer);
+    void addUser(User user);
 
-    void removeUser(Customer customer);
+    void removeUser(User user);
 
     List<User> getUsers();
 

@@ -4,6 +4,7 @@ import com.foodapp.model.DeliveryPartner;
 import com.foodapp.model.Order;
 import com.foodapp.repository.InMemoryDeliveryPartnerRepository;
 import com.foodapp.repository.InMemoryOrderRepository;
+import com.foodapp.repository.UserRepository;
 
 import java.util.Collections;
 import java.util.List;
@@ -12,24 +13,24 @@ import java.util.stream.Collectors;
 
 public class DeliveryPartnerService {
 
-    private final InMemoryDeliveryPartnerRepository inMemoryDeliveryPartnerRepository;
+    private final UserRepository userRepository;
     private final InMemoryOrderRepository inMemoryOrderRepository;
     private final Random random;
 
-    public DeliveryPartnerService(InMemoryDeliveryPartnerRepository inMemoryDeliveryPartnerRepository,
+    public DeliveryPartnerService(UserRepository userRepository,
                                   InMemoryOrderRepository inMemoryOrderRepository) {
 
-        if (inMemoryDeliveryPartnerRepository == null || inMemoryOrderRepository == null) {
+        if (userRepository == null || inMemoryOrderRepository == null) {
             throw new IllegalArgumentException("Repositories cannot be null");
         }
 
-        this.inMemoryDeliveryPartnerRepository = inMemoryDeliveryPartnerRepository;
+        this.userRepository = userRepository;
         this.inMemoryOrderRepository = inMemoryOrderRepository;
         this.random = new Random();
     }
 
     public List<DeliveryPartner> getDeliveryPartners() {
-        return inMemoryDeliveryPartnerRepository.getAllDeliveryPartners();
+        return userRepository.getDeliveryPartners();
     }
 
     public void addDeliveryPartner(DeliveryPartner deliveryPartner) {
@@ -37,15 +38,15 @@ public class DeliveryPartnerService {
             throw new IllegalArgumentException("DeliveryPartner cannot be null");
         }
 
-        inMemoryDeliveryPartnerRepository.addDeliveryPartner(deliveryPartner);
+        userRepository.addUser(deliveryPartner);
     }
 
     public DeliveryPartner getDeliveryPartnerById(int id) {
-        return inMemoryDeliveryPartnerRepository.getAllDeliveryPartners()
-                .stream()
-                .filter(partner -> partner.getId() == id)
-                .findFirst()
-                .orElse(null);
+         DeliveryPartner deliveryPartner = userRepository.getDeliveryPartnerById(id);
+        if (deliveryPartner == null) {
+             throw new IllegalArgumentException("DeliveryPartner with id " + id + " not found");
+        }
+        return deliveryPartner;
     }
 
     public DeliveryPartner getDeliveryPartnerByEmail(String email) {
@@ -53,17 +54,16 @@ public class DeliveryPartnerService {
             throw new IllegalArgumentException("Email cannot be null");
         }
 
-        return inMemoryDeliveryPartnerRepository.getAllDeliveryPartners()
+        return userRepository.getDeliveryPartners()
                 .stream()
                 .filter(partner -> email.equals(partner.getEmail()))
                 .findFirst()
                 .orElse(null);
     }
 
-    // Assign Random Delivery Partner
     public DeliveryPartner assignDeliveryPartnerRandomly() {
 
-        List<DeliveryPartner> partners = inMemoryDeliveryPartnerRepository.getAllDeliveryPartners();
+        List<DeliveryPartner> partners = userRepository.getDeliveryPartners();
 
         if (partners.isEmpty()) {
             throw new IllegalStateException("No delivery partners available");

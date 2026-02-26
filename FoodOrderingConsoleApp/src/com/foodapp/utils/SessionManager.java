@@ -1,24 +1,37 @@
 package com.foodapp.utils;
 
-import com.foodapp.model.Customer;
+import com.foodapp.model.FlatDiscount;
+import com.foodapp.model.User;
 
 public class SessionManager {
 
-    private Customer currentCustomer;
+    private User currentUser;
 
-    public void login(Customer customer) {
-        currentCustomer = customer;
+    private SessionManager() {
+
+    }
+
+    private static class SingletonHelper {
+        private static final SessionManager INSTANCE = new SessionManager();
+    }
+
+    public void login(User user) {
+        currentUser = user;
     }
 
     public void logout() {
-        currentCustomer = null;
+        currentUser = null;
     }
 
-    public Customer getCurrentCustomer() {
-        return currentCustomer;
+    public User getCurrentCustomer() {
+        return currentUser;
     }
 
     public boolean isLoggedIn() {
-        return currentCustomer != null;
+        return currentUser != null;
+    }
+
+    public static SessionManager getSessionManager() {
+        return SingletonHelper.INSTANCE;
     }
 }

@@ -42,43 +42,6 @@ public class CustomerController {
         this.deliveryPartnerService = deliveryPartnerService;
     }
 
-    public void createCustomer() {
-
-        int id = IdGenerator.getNextCustomerID();
-        String name = InputValidation.readValidName(scanner, "Enter Customer Name: ");
-        String email;
-
-        while (true) {
-            email = InputValidation.readValidEmail(scanner, "Enter Email: ");
-            boolean isCustomerExists = customerService.checkCustomerExistByEmail(email);
-            if (!isCustomerExists) {
-                break;
-            }
-            System.out.println("Customer with same email id already exists!");
-        }
-
-        String phone = InputValidation.readValidPhone(scanner, "Enter Phone: ");
-
-        Customer customer = new Customer(id, name, email, phone);
-
-        customerService.createCustomer(customer);
-
-        System.out.println("Customer created successfully.");
-    }
-
-    public void login() {
-
-        String email = InputValidation.readValidEmail(scanner, "Enter Customer Email Id: ");
-
-        Customer customer = customerService.findCustomerByEmail(email);
-
-        sessionManager.login(customer);
-
-        System.out.println("Login successful. Welcome " + customer.getName());
-
-        displayOption();
-    }
-
     private void logout() {
 
         sessionManager.logout();
@@ -86,15 +49,13 @@ public class CustomerController {
         System.out.println("Logged out successfully.");
     }
 
-    private void displayOption() {
+    public void displayOption() {
         try {
             while (sessionManager.isLoggedIn()) {
 
                 printOptionMenu();
 
-                int choice = InputValidation.readIntInRange(scanner, "Enter your choice: ", ADD_ITEM, LOGOUT
-//                        BACK
-                );
+                int choice = InputValidation.readIntInRange(scanner, "Enter your choice: ", ADD_ITEM, LOGOUT);
 
                 handleChoice(choice);
             }

@@ -11,13 +11,13 @@ public class InMemoryUserRepository implements UserRepository {
 
 
     @Override
-    public void addUser(Customer customer) {
-        users.put(customer.getId(), customer);
+    public void addUser(User user) {
+        users.put(user.getId(), user);
     }
 
     @Override
-    public void removeUser(Customer customer) {
-        users.remove(customer.getId());
+    public void removeUser(User user) {
+        users.remove(user.getId());
     }
 
     @Override
