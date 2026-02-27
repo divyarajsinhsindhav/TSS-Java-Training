@@ -118,6 +118,17 @@ public class CustomerController {
             return;
         }
 
+        OrderItem existingItem = cartService.getFoodItemExisted(customer.getId(), foodItem);
+
+        if (existingItem != null) {
+            cartService.updateOrderItemQuantityIfAlreadyExist(
+                    customer.getId(),
+                    existingItem,
+                    quantity
+            );
+            return;
+        }
+
         int id = IdGenerator.getNextOrderItemID();
 
         double price = foodItem.getPrice() * quantity;
@@ -156,18 +167,16 @@ public class CustomerController {
 
         User customer = sessionManager.getCurrentCustomer();
         displayCart();
-        int foodId = InputValidation.readPositiveInt(scanner, "Enter Food Item ID: ");
+        int orderItemId = InputValidation.readPositiveInt(scanner, "Enter Food Item ID: ");
 
         int quantity = InputValidation.readPositiveInt(scanner, "Enter New Quantity: ");
 
-        FoodItem foodItem = menuService.findFoodItem(foodId);
+        OrderItem orderItem = cartService.getOrderItemFromCart(customer.getId(), orderItemId);
 
-        if (foodItem == null) {
+        if (orderItem == null) {
             System.out.println("Food item not found.");
             return;
         }
-
-        OrderItem orderItem = cartService.getOrderItemFromCart(customer.getId(), foodItem.getId());
 
         orderItem.setQuantity(quantity);
 
@@ -207,12 +216,12 @@ public class CustomerController {
 
         cart.forEach(orderItem -> System.out.printf("%-12d %-20s %-10d %-15.2f %-15.2f%n", orderItem.getId(), orderItem.getFoodItem().getName(), orderItem.getQuantity(), orderItem.getFoodItem().getPrice(), orderItem.getPrice()));
 
-        double totalAmount = cart.stream().mapToDouble(orderItem -> orderItem.getFoodItem().getPrice()).sum();
+        double totalAmount = cart.stream().mapToDouble(OrderItem::getPrice).sum();
 
         System.out.println("Total Amount: " +  totalAmount);
     }
 
-    private void placeOrder() {
+    private void placeOrder() throws InterruptedException {
 
         User customer = sessionManager.getCurrentCustomer();
 
@@ -223,7 +232,14 @@ public class CustomerController {
             return;
         }
 
+        if (!deliveryPartnerService.checkDeliveryPartnerAvailable()) {
+            System.out.println("Delivery Partner is not available.");
+            return;
+        }
+
         PaymentMode mode = handlePayment();
+
+        Thread.sleep(1000);
 
         Order order;
         try {
@@ -237,11 +253,15 @@ public class CustomerController {
 
         System.out.println("\nAssigning delivery partner.....");
 
+        Thread.sleep(2000);
+
         orderService.assignDeliveryPartner(order);
 
         System.out.println("\nYour delivery partner has been assigned.");
 
         System.out.println("\nYour delivery partner is \n" + order.getDeliveryPartner());
+
+        Thread.sleep(3000);
 
         InvoicePrinter.printInvoice(order);
 

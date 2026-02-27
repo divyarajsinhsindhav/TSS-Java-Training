@@ -1,8 +1,6 @@
 package com.foodapp.service;
 
-import com.foodapp.model.Customer;
-import com.foodapp.model.OrderItem;
-import com.foodapp.model.User;
+import com.foodapp.model.*;
 import com.foodapp.repository.InMemoryCartRepository;
 
 import java.util.List;
@@ -106,4 +104,22 @@ public class CartService {
         inMemoryCartRepository.clearCart(customerId);
     }
 
+    public OrderItem getFoodItemExisted(Integer customerId, FoodItem foodItem) {
+        return inMemoryCartRepository.getCart(customerId).
+                stream()
+                .filter(item -> item.getFoodItem().getId() == foodItem.getId())
+                .findFirst()
+                .orElse(null);
+    }
+
+    public void updateOrderItemQuantityIfAlreadyExist(int customerId, OrderItem foodItemExisted, int quantity) {
+        inMemoryCartRepository.getCart(customerId).stream()
+                .filter(item -> item.getId() == foodItemExisted.getId())
+                .findFirst()
+                .ifPresent(orderItem -> {
+                    orderItem.setQuantity(foodItemExisted.getQuantity() + quantity);
+                    orderItem.setPrice(foodItemExisted.getFoodItem().getPrice() * foodItemExisted.getQuantity());
+                });
+
+    }
 }

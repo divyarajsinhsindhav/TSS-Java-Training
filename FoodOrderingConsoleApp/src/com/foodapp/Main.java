@@ -23,7 +23,6 @@ public class Main {
     private static CustomerController customerController;
     private static DeliveryPartnerController deliveryPartnerController;
     private static AuthController authController;
-    private static MenuSeeder menuSeeder;
 
     public static void main(String[] args) {
 

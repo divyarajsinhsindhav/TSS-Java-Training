@@ -2,7 +2,6 @@ package com.foodapp.service;
 
 import com.foodapp.model.Customer;
 import com.foodapp.model.User;
-import com.foodapp.repository.InMemoryCustomerRepository;
 import com.foodapp.repository.UserRepository;
 
 public class CustomerService {

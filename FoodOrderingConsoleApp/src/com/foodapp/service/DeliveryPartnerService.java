@@ -3,7 +3,6 @@ package com.foodapp.service;
 import com.foodapp.model.DeliveryPartner;
 import com.foodapp.model.DeliveryPartnerStatus;
 import com.foodapp.model.Order;
-import com.foodapp.repository.InMemoryDeliveryPartnerRepository;
 import com.foodapp.repository.InMemoryOrderRepository;
 import com.foodapp.repository.UserRepository;
 
@@ -40,6 +39,12 @@ public class DeliveryPartnerService {
         }
 
         userRepository.addUser(deliveryPartner);
+    }
+
+    public boolean checkDeliveryPartnerAvailable() {
+        return userRepository.getDeliveryPartners()
+                .stream()
+                .anyMatch(deliveryPartner -> deliveryPartner.getStatus() == DeliveryPartnerStatus.ACTIVE);
     }
 
     public DeliveryPartner getDeliveryPartnerById(int id) {
