@@ -422,6 +422,15 @@ class Main {
     -DeliveryPartnerController deliveryPartnerController
     -AuthController authController
     +main(args: String[])
+    -initializa()
+    -start()
+    -registerAdmin()
+    -registerCustomer()
+    -registerDeliveryPartner()
+    -login()
+    -admin()
+    -customer()
+    -deliveryPartner()
 }
 
 Main --> AuthController

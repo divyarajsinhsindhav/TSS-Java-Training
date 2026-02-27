@@ -31,10 +31,6 @@ public class Main {
         start();
     }
 
-    private static void dataSeeder() {
-
-    }
-
     private static void initialize() {
 
         UserRepository userRepository = new InMemoryUserRepository();
