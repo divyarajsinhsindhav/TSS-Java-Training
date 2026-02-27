@@ -55,7 +55,8 @@ public class Main {
                 orderService,
                 cartService,
                 sessionManager,
-                deliveryPartnerService
+                deliveryPartnerService,
+                discountService
         );
 
         deliveryPartnerController = new DeliveryPartnerController(deliveryPartnerService, sessionManager);

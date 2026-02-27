@@ -440,3 +440,5 @@ Main --> AdminController
 Main --> CustomerController
 Main --> DeliveryPartnerController
 ```
+
+## Flow of the application

@@ -29,10 +29,11 @@ public class CustomerController {
     private CartService cartService;
     private SessionManager sessionManager;
     private DeliveryPartnerService deliveryPartnerService;
+    private DiscountService discountService;
 
     private Scanner scanner = new Scanner(System.in);
 
-    public CustomerController(CustomerService customerService, MenuService menuService, OrderService orderService, CartService cartService, SessionManager sessionManager, DeliveryPartnerService deliveryPartnerService) {
+    public CustomerController(CustomerService customerService, MenuService menuService, OrderService orderService, CartService cartService, SessionManager sessionManager, DeliveryPartnerService deliveryPartnerService, DiscountService discountService) {
 
         this.customerService = customerService;
         this.menuService = menuService;
@@ -40,6 +41,7 @@ public class CustomerController {
         this.cartService = cartService;
         this.sessionManager = sessionManager;
         this.deliveryPartnerService = deliveryPartnerService;
+        this.discountService = discountService;
     }
 
     private void logout() {
@@ -102,42 +104,46 @@ public class CustomerController {
     }
 
     private void addItemToCart() {
-
         User customer = sessionManager.getCurrentCustomer();
+        do {
+            menuService.displayMenu();
 
-        menuService.displayMenu();
+            int foodId = InputValidation.readPositiveInt(scanner, "Enter Food Item ID: ");
 
-        int foodId = InputValidation.readPositiveInt(scanner, "Enter Food Item ID: ");
+            int quantity = InputValidation.readPositiveInt(scanner, "Enter Quantity: ");
 
-        int quantity = InputValidation.readPositiveInt(scanner, "Enter Quantity: ");
+            FoodItem foodItem = menuService.findFoodItem(foodId);
 
-        FoodItem foodItem = menuService.findFoodItem(foodId);
+            if (foodItem == null) {
+                System.out.println("Food item not found.");
+                return;
+            }
 
-        if (foodItem == null) {
-            System.out.println("Food item not found.");
-            return;
-        }
+            OrderItem existingItem = cartService.getFoodItemExisted(customer.getId(), foodItem);
 
-        OrderItem existingItem = cartService.getFoodItemExisted(customer.getId(), foodItem);
+            if (existingItem != null) {
+                cartService.updateOrderItemQuantityIfAlreadyExist(
+                        customer.getId(),
+                        existingItem,
+                        quantity
+                );
+                continue;
+            }
 
-        if (existingItem != null) {
-            cartService.updateOrderItemQuantityIfAlreadyExist(
-                    customer.getId(),
-                    existingItem,
-                    quantity
-            );
-            return;
-        }
+            int id = IdGenerator.getNextOrderItemID();
 
-        int id = IdGenerator.getNextOrderItemID();
+            double price = foodItem.getPrice() * quantity;
 
-        double price = foodItem.getPrice() * quantity;
+            OrderItem orderItem = new OrderItem(id, foodItem, quantity, price);
 
-        OrderItem orderItem = new OrderItem(id, foodItem, quantity, price);
+            cartService.addOrderItemToCart(customer.getId(), orderItem);
 
-        cartService.addOrderItemToCart(customer.getId(), orderItem);
+            System.out.println("Item added to cart.");
+        } while(InputValidation.doUserWantToContinue(scanner,
+                "\nDo you want to add another item to cart?"));
 
-        System.out.println("Item added to cart.");
+
+
     }
 
     private void removeItemFromCart() {
@@ -210,15 +216,54 @@ public class CustomerController {
             throw new EmptyCartException("Cart is empty.");
         }
 
-        System.out.printf("%-12s %-20s %-10s %-15s %-15s%n", "Item ID", "Item Name", "Quantity", "Unit Price", "Total Price");
+        System.out.println("\n==================== YOUR CART ====================");
 
-        System.out.println("---------------------------------------------------------------------");
+        System.out.printf("%-10s %-20s %-10s %-12s %-12s%n",
+                "Item ID", "Item Name", "Qty", "Unit Price", "Subtotal");
 
-        cart.forEach(orderItem -> System.out.printf("%-12d %-20s %-10d %-15.2f %-15.2f%n", orderItem.getId(), orderItem.getFoodItem().getName(), orderItem.getQuantity(), orderItem.getFoodItem().getPrice(), orderItem.getPrice()));
+        System.out.println("--------------------------------------------------------------");
 
-        double totalAmount = cart.stream().mapToDouble(OrderItem::getPrice).sum();
+        double totalAmount = 0.0;
 
-        System.out.println("Total Amount: " +  totalAmount);
+        double subtotal = 0.0;
+        for (OrderItem item : cart) {
+
+            double unitPrice = item.getFoodItem().getPrice();
+            int quantity = item.getQuantity();
+            subtotal = unitPrice * quantity;
+
+            totalAmount += subtotal;
+
+            System.out.printf("%-10d %-20s %-10d %-12.2f %-12.2f%n",
+                    item.getId(),
+                    item.getFoodItem().getName(),
+                    quantity,
+                    unitPrice,
+                    subtotal);
+        }
+
+        System.out.println("--------------------------------------------------------------");
+        System.out.printf("%-45s %.2f%n", "Total Amount:", totalAmount);
+
+        double discountRate = discountService.applyFlatDiscount(totalAmount);
+        double discountAmount = (subtotal * discountRate / 100);
+        if (discountRate > 0) {
+            double finalAmount = totalAmount - discountAmount;
+
+            System.out.printf("%-45s -%.2f%n",
+                    "Flat Discount:",
+                    discountAmount);
+
+            System.out.printf("%-45s %.2f%n",
+                    "Final Amount to Pay:",
+                    finalAmount);
+        } else {
+            System.out.printf("%-45s %.2f%n",
+                    "Final Amount to Pay:",
+                    totalAmount);
+        }
+
+        System.out.println("====================================================\n");
     }
 
     private void placeOrder() throws InterruptedException {
@@ -237,11 +282,14 @@ public class CustomerController {
             return;
         }
 
+        displayCart();
+
         PaymentMode mode = handlePayment();
 
         Thread.sleep(1000);
 
         Order order;
+
         try {
             order = orderService.placeOrder(customer, mode, cart);
         } catch (EmptyCartException e) {

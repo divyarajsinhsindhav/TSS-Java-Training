@@ -37,7 +37,7 @@ public class AdminController {
             System.out.println("1. Manage Menu");
             System.out.println("2. Manage Discount");
             System.out.println("3. Manage Delivery Partners");
-            System.out.println("4. Back");
+            System.out.println("4. Logout");
 
             int choice = InputValidation.readIntInRange(scanner,
                     "Enter your choice: ", MANAGE_MENU, BACK);

@@ -53,7 +53,7 @@ public class InvoicePrinter {
         double finalAmount = order.getFinalAmount();
 
         System.out.printf("%-40s %.2f%n", "Subtotal:", subtotal);
-        System.out.printf("%-40s %.2f%n", "Discount:", discount);
+        System.out.printf("%-40s %.2f%n", "Discount Rate:", discount);
         System.out.printf("%-40s %.2f%n", "Final Amount:", finalAmount);
 
         System.out.println("==============================================================");
