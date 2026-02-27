@@ -246,7 +246,7 @@ public class CustomerController {
         System.out.printf("%-45s %.2f%n", "Total Amount:", totalAmount);
 
         double discountRate = discountService.applyFlatDiscount(totalAmount);
-        double discountAmount = (subtotal * discountRate / 100);
+        double discountAmount = (totalAmount * discountRate / 100);
         if (discountRate > 0) {
             double finalAmount = totalAmount - discountAmount;
 
