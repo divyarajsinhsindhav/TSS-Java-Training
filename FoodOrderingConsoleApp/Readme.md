@@ -20,6 +20,8 @@ Design a console-based mini food ordering system where:
 - Delivery - Randomly assign one of two delivery partners.
 - Invoice - Print bill with item details, discount, total, payment mode, and delivery partner.
 
+
+## Class Diagram
 ```mermaid
 classDiagram
 direction TB
