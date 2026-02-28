@@ -82,24 +82,36 @@ public class AdminController {
         }
     }
 
-    private static final int SET_DISCOUNT = 1;
-    private static final int SET_DISCOUNT_ON = 2;
-    private static final int DISCOUNT_BACK = 3;
     private void manageDiscount() {
 
+        FlatDiscount discount = FlatDiscount.getInstance();
+
         while (true) {
-            System.out.println("\n--- Manage Discount ---");
-            System.out.println("1. Set Flat Discount");
-            System.out.println("2. Set Discount Minimum Amount");
+
+            double rate = discount.getDiscount();
+            double minAmount = discount.getFlatDiscountOn();
+
+            System.out.println("\n====== Discount Policy ======");
+
+            if (rate == 0 && minAmount == 0) {
+                System.out.println("No discount policy configured.");
+            } else {
+                System.out.println("Current Policy:");
+                System.out.println("Discount Rate        : " + rate + "%");
+                System.out.println("Minimum Order Amount : " + minAmount);
+            }
+
+            System.out.println("\n1. Set / Update Discount Rate");
+            System.out.println("2. Set / Update Minimum Order Amount");
             System.out.println("3. Back");
 
-            int choice = InputValidation.readIntInRange(scanner,
-                    "Enter your choice: ", SET_DISCOUNT, DISCOUNT_BACK);
+            int choice = InputValidation.readIntInRange(
+                    scanner, "Enter your choice: ", 1, 3);
 
             switch (choice) {
-                case SET_DISCOUNT -> setFlatDiscountRate();
-                case SET_DISCOUNT_ON -> setFlatDiscountOn();
-                case DISCOUNT_BACK -> {
+                case 1 -> setDiscountRate();
+                case 2 -> setMinimumOrderAmountForDiscount();
+                case 3 -> {
                     return;
                 }
             }
@@ -219,22 +231,44 @@ public class AdminController {
 
     }
 
-    private void setFlatDiscountRate() {
-        System.out.println("\n--- Set Flat Discount ---");
+    private void setDiscountRate() {
+        FlatDiscount discount = FlatDiscount.getInstance();
+        double currentRate = discount.getDiscount();
 
-        int flatDiscount = InputValidation.readPositiveInt(scanner, "Enter Flat Discount: ");
+        System.out.println("\n--- Discount Rate Settings ---");
 
-        FlatDiscount.getInstance().setDiscount(flatDiscount);
-        System.out.println("Discount updated successfully!");
+        if (currentRate == 0) {
+            System.out.println("No discount rate configured.");
+        } else {
+            System.out.println("Current Discount Rate: " + currentRate + "%");
+        }
+
+        int newRate = InputValidation.readPositiveInt(
+                scanner, "Enter new discount rate (%): ");
+
+        discount.setDiscount(newRate);
+
+        System.out.println("Discount rate is now set to " + newRate + "%.");
     }
 
-    private void setFlatDiscountOn() {
-        System.out.println("\n--- Set Flat Discount On ---");
+    private void setMinimumOrderAmountForDiscount() {
+        FlatDiscount discount = FlatDiscount.getInstance();
+        double currentAmount = discount.getFlatDiscountOn();
 
-        double flatDiscount = InputValidation.readPositiveDouble(scanner, "Enter amount: ");
+        System.out.println("\n--- Minimum Order Amount Settings ---");
 
-        FlatDiscount.getInstance().setFlatDiscountOn(flatDiscount);
-        System.out.println("Amount for discount updated successfully!");
+        if (currentAmount == 0) {
+            System.out.println("No minimum order amount configured.");
+        } else {
+            System.out.println("Current Minimum Order Amount: " + currentAmount);
+        }
+
+        double newAmount = InputValidation.readPositiveDouble(
+                scanner, "Enter minimum order amount required for discount: ");
+
+        discount.setFlatDiscountOn(newAmount);
+
+        System.out.println("Discount will now apply on orders above " + newAmount + ".");
     }
 
     private void setStatusOfDeliveryPartner() {
@@ -268,28 +302,27 @@ public class AdminController {
             return;
         }
 
-        System.out.println("Select Status:");
-        System.out.println("1. ACTIVE");
-        System.out.println("2. INACTIVE");
+        DeliveryPartnerStatus currentStatus = selectedPartner.getStatus();
+        DeliveryPartnerStatus newStatus;
 
-        int choice = InputValidation.readIntInRange(scanner, "Enter choice: ", 1, 2);
+        if (currentStatus == DeliveryPartnerStatus.INACTIVE) {
+            System.out.println("1. Change to ACTIVE");
+        } else {
+            System.out.println("1. Change to INACTIVE");
+        }
+        System.out.println("0. Back");
 
-        DeliveryPartnerStatus status;
+        int choice = InputValidation.readIntInRange(scanner, "Enter choice: ", 0, 1);
 
-        switch (choice) {
-            case 1:
-                status = DeliveryPartnerStatus.ACTIVE;
-                break;
-            case 2:
-                status = DeliveryPartnerStatus.INACTIVE;
-                break;
-            default:
-                System.out.println("Invalid choice.");
-                return;
+        if (choice == 0) {
+            return;
         }
 
-        deliveryPartnerService.changeDeliveryPartnerStatus(selectedPartner, status);
+        newStatus = (currentStatus == DeliveryPartnerStatus.INACTIVE)
+                ? DeliveryPartnerStatus.ACTIVE
+                : DeliveryPartnerStatus.INACTIVE;
 
+        deliveryPartnerService.changeDeliveryPartnerStatus(selectedPartner, newStatus);
         System.out.println("Delivery Partner status updated successfully.");
     }
 

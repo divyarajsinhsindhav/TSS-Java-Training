@@ -131,7 +131,6 @@ public class Main {
         }
     }
 
-
     private static void admin() {
         adminController.displayOptions();
     }

@@ -142,8 +142,6 @@ public class CustomerController {
         } while(InputValidation.doUserWantToContinue(scanner,
                 "\nDo you want to add another item to cart?"));
 
-
-
     }
 
     private void removeItemFromCart() {

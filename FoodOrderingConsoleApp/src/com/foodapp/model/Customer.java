@@ -59,6 +59,7 @@ public class Customer extends User {
         return super.getRole();
     }
 
+
     @Override
     public String toString() {
         return String.format(
