@@ -53,13 +53,12 @@ public class DeliveryPartner extends User {
 
     @Override
     public String toString() {
-        return String.format(
-                "+----+----------------+----------------------+\n" +
-                        "| ID | Name           | Email                |\n" +
-                        "+----+----------------+----------------------+\n" +
-                        "| %-2d | %-14s | %-20s |\n" +
-                        "+----+----------------+----------------------+",
-                id, name, email
-        );
+        String line = "+-------+----------------+----------------------+\n";
+
+        return line +
+                String.format("| %-5s | %-14s | %-20s |\n", "ID", "Name", "Phone") +
+                line +
+                String.format("| %-5d | %-14.14s | %-20.20s |\n", id, name, phone) +
+                line;
     }
 }

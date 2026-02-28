@@ -284,6 +284,13 @@ public class CustomerController {
 
         displayCart();
 
+        boolean wantToPlaceOrder = InputValidation.doUserWantToContinue(scanner, "Want to place order?");
+        if (!wantToPlaceOrder) {
+            return;
+        }
+
+        Thread.sleep(1000);
+
         PaymentMode mode = handlePayment();
 
         Thread.sleep(1000);
