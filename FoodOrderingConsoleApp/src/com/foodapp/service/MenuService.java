@@ -90,6 +90,19 @@ public class MenuService {
                 .orElse(null);
     }
 
+    public List<FoodItem> findFoodItemsByCategory(int categoryId, String name, Menu menu) {
+        if (name == null) {
+            return null;
+        }
+        return findCategoryById(menu, categoryId)
+                .getMenu()
+                .stream()
+                .filter(item -> item instanceof FoodItem)
+                .map(item -> (FoodItem) item)
+                .filter(foodItem -> foodItem.getName().equalsIgnoreCase(name))
+                .toList();
+    }
+
     public FoodItem findFoodItem(int id) {
         return findFoodItemById(root, id);
     }

@@ -47,7 +47,7 @@ public class Main {
 
         SessionManager sessionManager = SessionManager.getSessionManager();
 
-        adminController = new AdminController(menuService, deliveryPartnerService);
+        adminController = new AdminController(menuService, deliveryPartnerService, orderService);
 
         customerController = new CustomerController(
                 customerService,

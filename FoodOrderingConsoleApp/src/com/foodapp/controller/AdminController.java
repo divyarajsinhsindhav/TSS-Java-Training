@@ -1,11 +1,9 @@
 package com.foodapp.controller;
 
-import com.foodapp.model.DeliveryPartner;
-import com.foodapp.model.DeliveryPartnerStatus;
-import com.foodapp.model.FlatDiscount;
-import com.foodapp.model.MenuCategory;
+import com.foodapp.model.*;
 import com.foodapp.service.DeliveryPartnerService;
 import com.foodapp.service.MenuService;
+import com.foodapp.service.OrderService;
 import com.foodapp.utils.IdGenerator;
 import com.foodapp.utils.InputValidation;
 
@@ -16,20 +14,24 @@ public class AdminController {
     private final Scanner scanner;
     private final MenuService menuService;
     private final DeliveryPartnerService deliveryPartnerService;
+    private final OrderService orderService;
     private MenuController menuController;
 
     public AdminController(MenuService menuService,
-                           DeliveryPartnerService deliveryPartnerService) {
+                           DeliveryPartnerService deliveryPartnerService,
+                           OrderService orderService) {
         this.scanner = new Scanner(System.in);
         this.menuService = menuService;
         this.deliveryPartnerService = deliveryPartnerService;
+        this.orderService = orderService;
         this.menuController = new MenuController(menuService);
     }
 
     private static final int MANAGE_MENU = 1;
     private static final int MANAGE_DISCOUNT = 2;
     private static final int MANAGE_DELIVERY_PARTNER = 3;
-    private static final int BACK = 4;
+    private static final int MANAGE_ORDER_HISTORY = 4;
+    private static final int BACK = 5;
     public void displayOptions() {
         while (true) {
 
@@ -37,7 +39,8 @@ public class AdminController {
             System.out.println("1. Manage Menu");
             System.out.println("2. Manage Discount");
             System.out.println("3. Manage Delivery Partners");
-            System.out.println("4. Logout");
+            System.out.println("4. Order History");
+            System.out.println("5. Logout");
 
             int choice = InputValidation.readIntInRange(scanner,
                     "Enter your choice: ", MANAGE_MENU, BACK);
@@ -46,6 +49,7 @@ public class AdminController {
                 case MANAGE_MENU -> manageMenu();
                 case MANAGE_DISCOUNT -> manageDiscount();
                 case MANAGE_DELIVERY_PARTNER -> manageDeliveryPartners();
+                case MANAGE_ORDER_HISTORY -> manageOrderHistory();
                 case BACK -> {
                     System.out.println("Returning to previous menu...");
                     return;
@@ -117,6 +121,28 @@ public class AdminController {
             switch (choice) {
                 case SET_DELIVERY_PARTNER_STATUS -> setStatusOfDeliveryPartner();
                 case DELIVERY_BACK -> {
+                    return;
+                }
+            }
+        }
+    }
+
+    private static final int ORDER_HISTORY = 1;
+    private static final int ORDER_HISTORY_SUMMARY = 2;
+    private static final int ORDER_HISTORY_BACK = 3;
+    private void manageOrderHistory() {
+        while (true) {
+            System.out.println("\n--- Manage Order History ---");
+            System.out.println("1. Order History");
+            System.out.println("2. Summary");
+            System.out.println("3. Back");
+
+            int choice = InputValidation.readIntInRange(scanner,
+                    "Enter yout choice: ", ORDER_HISTORY, ORDER_HISTORY_BACK);
+            switch (choice) {
+                case ORDER_HISTORY -> orderHistory();
+                case ORDER_HISTORY_SUMMARY -> summaryOfOrderHistory();
+                case ORDER_HISTORY_BACK ->  {
                     return;
                 }
             }
@@ -265,5 +291,64 @@ public class AdminController {
         deliveryPartnerService.changeDeliveryPartnerStatus(selectedPartner, status);
 
         System.out.println("Delivery Partner status updated successfully.");
+    }
+
+    private void orderHistory() {
+        orderService.getOrders()
+                .stream()
+                .forEach(order -> {
+
+                    System.out.println("\n=================================================");
+                    System.out.println("                  ORDER DETAILS                  ");
+                    System.out.println("=================================================");
+
+                    System.out.println("Order ID : " + order.getId());
+
+                    // Customer Details
+                    User customer = order.getCustomer();
+                    System.out.println("\nCustomer Details:");
+                    System.out.println("Customer ID   : " + customer.getId());
+                    System.out.println("Customer Name : " + customer.getName());
+
+                    // Delivery Partner Details
+                    User partner = order.getDeliveryPartner();
+                    if (partner != null) {
+                        System.out.println("\nDelivery Partner Details:");
+                        System.out.println("Partner ID    : " + partner.getId());
+                        System.out.println("Partner Name  : " + partner.getName());
+                    } else {
+                        System.out.println("\nDelivery Partner : Not Assigned");
+                    }
+
+                    // Order Items
+                    System.out.println("\n---------------- ORDER ITEMS ----------------");
+
+                    order.getOrderItems().forEach(item -> {
+
+                        String itemName = item.getFoodItem().getName();
+                        int qty = item.getQuantity();
+                        double price = item.getFoodItem().getPrice();
+                        double total = qty * price;
+
+                        System.out.printf("Item: %-20s | Qty: %-3d | Price: %-8.2f | Total: %-8.2f%n",
+                                itemName, qty, price, total);
+
+                    });
+
+                    // Bill Summary
+                    System.out.println("\n---------------- BILL SUMMARY ----------------");
+                    System.out.printf("Subtotal      : %.2f%n", order.getTotal());
+                    System.out.printf("Discount Rate : %.2f%n", order.getDiscountRate());
+                    System.out.printf("Final Amount  : %.2f%n", order.getFinalAmount());
+
+                    System.out.println("=================================================\n");
+                });
+    }
+
+    private void summaryOfOrderHistory() {
+        orderService.orderStats()
+                .forEach((key, value) ->
+                        System.out.println(key + " : " + value)
+                );
     }
 }

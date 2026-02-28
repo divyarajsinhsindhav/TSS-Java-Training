@@ -33,13 +33,6 @@ public class DeliveryPartnerService {
         return userRepository.getDeliveryPartners();
     }
 
-    public void addDeliveryPartner(DeliveryPartner deliveryPartner) {
-        if (deliveryPartner == null) {
-            throw new IllegalArgumentException("DeliveryPartner cannot be null");
-        }
-
-        userRepository.addUser(deliveryPartner);
-    }
 
     public boolean checkDeliveryPartnerAvailable() {
         return userRepository.getDeliveryPartners()

@@ -7,7 +7,9 @@ import com.foodapp.repository.InMemoryCartRepository;
 import com.foodapp.repository.InMemoryOrderRepository;
 import com.foodapp.utils.IdGenerator;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class OrderService {
     private DeliveryPartnerService deliveryPartnerService;
@@ -20,6 +22,10 @@ public class OrderService {
         this.inMemoryOrderRepository = inMemoryOrderRepository;
         this.inMemoryCartRepository = inMemoryCartRepository;
         this.discountService = discountService;
+    }
+
+    public List<Order> getOrders() {
+        return inMemoryOrderRepository.getAllOrders();
     }
 
     public Order placeOrder(User customer, PaymentMode mode, List<OrderItem> Cart) {
@@ -83,5 +89,23 @@ public class OrderService {
         DeliveryPartner deliveryPartner = deliveryPartnerService.assignDeliveryPartnerRandomly();
         order.setDeliveryPartner(deliveryPartner);
         return deliveryPartner;
+    }
+
+    public Map<String, Object> orderStats() {
+
+        Map<String, Object> stats = new HashMap<>();
+
+        List<Order> orders = inMemoryOrderRepository.getAllOrders();
+
+        int totalOrders = orders.size();
+
+        double totalRevenue = orders.stream()
+                .mapToDouble(Order::getFinalAmount)
+                .sum();
+
+        stats.put("totalOrders", totalOrders);
+        stats.put("totalRevenue", totalRevenue);
+
+        return stats;
     }
 }
