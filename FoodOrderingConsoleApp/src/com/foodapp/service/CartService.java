@@ -4,6 +4,7 @@ import com.foodapp.model.*;
 import com.foodapp.repository.InMemoryCartRepository;
 
 import java.util.List;
+import java.util.Map;
 
 public class CartService {
 
@@ -94,6 +95,10 @@ public class CartService {
         }
 
         return inMemoryCartRepository.getCart(customerId);
+    }
+
+    public Map<Integer, List<OrderItem>> getCart() {
+        return inMemoryCartRepository.getCart();
     }
 
     public void clearCustomerCart(Integer customerId) {

@@ -41,11 +41,25 @@ public class FoodItem implements Menu {
     }
 
     @Override
-    public void render(String indent) {
+    public void render(int level) {
 
-        System.out.printf("%-4d %-28s ₹%-8.2f%n",
-                id,
-                name,
+        String text = id + "  " + name;
+
+        int width = 40;
+        int dots = Math.max(2, width - text.length());
+
+        System.out.printf("%s%s%s ₹%.2f%n",
+                indent(level),
+                text,
+                ".".repeat(dots),
                 price);
+    }
+
+    public void setName(String newName) {
+        this.name = newName;
+    }
+
+    public void setPrice(double newPrice) {
+        this.price = newPrice;
     }
 }

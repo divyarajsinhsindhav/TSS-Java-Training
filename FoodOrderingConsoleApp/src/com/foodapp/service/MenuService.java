@@ -1,5 +1,6 @@
 package com.foodapp.service;
 
+import com.foodapp.exception.ItemNotFoundException;
 import com.foodapp.model.*;
 
 import java.util.ArrayList;
@@ -9,9 +10,11 @@ import java.util.Objects;
 public class MenuService {
 
     private final Menu root;
+    private CartService cartService;
 
-    public MenuService() {
+    public MenuService(CartService cartService) {
         this.root = new MenuCategory(0, "FOOD MENU");
+        this.cartService = cartService;
     }
 
     public Menu getRoot() {
@@ -41,11 +44,7 @@ public class MenuService {
     }
 
     public void displayMenu() {
-        System.out.println("\n==================================================");
-        System.out.println("                     RESTAURANT MENU                ");
-        System.out.println("==================================================\n");
-        root.render("");
-        System.out.println("\n==================================================");
+        root.render(0);
     }
 
     private MenuCategory findCategoryById(Menu menu, int id) {
@@ -167,4 +166,67 @@ public class MenuService {
             }
         }
     }
+
+    public MenuCategory findParentCategoryOfFoodItem(int itemId) {
+        return findParentCategoryOfFoodItem(root, itemId);
+    }
+
+    public void deleteItem(int itemId) {
+        FoodItem item = findFoodItem(itemId);
+
+        if (item == null) {
+            throw new ItemNotFoundException("Item not found");
+        }
+
+        MenuCategory parent = findParentCategoryOfFoodItem(itemId);
+
+        if (parent != null) {
+            parent.getMenu().remove(item);
+
+            cartService.getCart()
+                    .values()
+                    .forEach(orderItems ->
+                            orderItems.removeIf(orderItem ->
+                                    orderItem.getFoodItem().getId() == itemId
+                            )
+                    );
+            System.out.println("Food item deleted successfully!");
+        }
+    }
+
+    private MenuCategory findParentCategoryOfFoodItem(Menu menu, int itemId) {
+
+        if (menu instanceof MenuCategory category) {
+
+            for (Menu child : category.getMenu()) {
+
+                if (child instanceof FoodItem foodItem && foodItem.getId() == itemId) {
+                    return category; // parent found
+                }
+
+                if (child instanceof MenuCategory) {
+                    MenuCategory result = findParentCategoryOfFoodItem(child, itemId);
+                    if (result != null) {
+                        return result;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private void updateCategory(int categoryId, String newName) {
+        getCategory().stream()
+                .filter(category -> category.getId() == categoryId)
+                .findFirst()
+                .ifPresentOrElse(
+                        category -> {
+                            category.setCategory(newName);
+                            System.out.println("Category updated successfully!");
+                        },
+                        () -> System.out.println("Category not found!")
+                );
+    }
+
 }
