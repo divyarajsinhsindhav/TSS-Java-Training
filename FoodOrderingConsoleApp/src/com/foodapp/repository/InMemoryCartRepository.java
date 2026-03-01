@@ -29,4 +29,7 @@ public class InMemoryCartRepository implements CartRepository {
         return cart.getOrDefault(customerId, new ArrayList<>());
     }
 
+    public Map<Integer, List<OrderItem>> getCart() {
+        return cart;
+    }
 }

@@ -36,21 +36,27 @@ public class MenuCategory implements Menu {
         return items;
     }
 
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
     @Override
-    public void render(String indent) {
+    public void render(int level) {
 
-        System.out.println(indent + category);
+        String indent = indent(level);
 
-        for (int i = 0; i < items.size(); i++) {
+        if (level == 0) {
+            System.out.println("\n==================================================");
+            System.out.printf("%s%s%n", indent, category.toUpperCase());
+            System.out.println("==================================================");
+        }
+        else {
+            System.out.printf("\n%s[ %s ]%n", indent, category.toUpperCase());
+            System.out.printf("%s--------------------------------------------------%n", indent);
+        }
 
-            Menu item = items.get(i);
-            boolean isLast = (i == items.size() - 1);
-
-            String branch = isLast ? "└── " : "├── ";
-            String childIndent = indent + (isLast ? "    " : "│   ");
-
-            System.out.print(indent + branch);
-            item.render(childIndent);
+        for (Menu item : items) {
+            item.render(level + 1);
         }
     }
 }

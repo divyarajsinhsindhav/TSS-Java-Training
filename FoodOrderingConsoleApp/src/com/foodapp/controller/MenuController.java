@@ -10,13 +10,8 @@ public class MenuController {
 
     public void displayMenu() {
 
-        System.out.println("\n==================================================");
-        System.out.println("                     RESTAURANT MENU                ");
-        System.out.println("==================================================\n");
-
         menuService.displayMenu();
 
-        System.out.println("\n==================================================");
     }
 
     public void displayItems() {

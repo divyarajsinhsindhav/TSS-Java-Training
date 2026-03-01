@@ -39,7 +39,7 @@ public class Main {
 
         CustomerService customerService = new CustomerService(userRepository);
         CartService cartService = new CartService(inMemoryCartRepository, customerService);
-        MenuService menuService = new MenuService();
+        MenuService menuService = new MenuService(cartService);
         DeliveryPartnerService deliveryPartnerService = new DeliveryPartnerService(userRepository, inMemoryOrderRepository);
         DiscountService discountService = new DiscountService();
         OrderService orderService = new OrderService(deliveryPartnerService, inMemoryOrderRepository, inMemoryCartRepository, discountService);
@@ -76,22 +76,22 @@ public class Main {
         while (true) {
 
             System.out.println("\n===== FOOD ORDERING SYSTEM =====");
-            System.out.println("1. Register as Admin");
-            System.out.println("2. Register as Customer");
-            System.out.println("3. Register as DeliveryPartner");
-            System.out.println("4. Login");
-            System.out.println("5. Exit");
+//            System.out.println("1. Register as Admin");
+            System.out.println("1. Register as Customer");
+            System.out.println("2. Register as DeliveryPartner");
+            System.out.println("3. Login");
+            System.out.println("4. Exit");
 
-            int choice = InputValidation.readIntInRange(scanner, "Enter your choice: ", 1, 5);
+            int choice = InputValidation.readIntInRange(scanner, "Enter your choice: ", 1, 4);
 
             try {
 
                 switch (choice) {
-                    case 1 -> registerAdmin();
-                    case 2 -> registerCustomer();
-                    case 3 -> registerDeliveryPartner();
-                    case 4 -> login();
-                    case 5 -> {
+//                    case 1 -> registerAdmin();
+                    case 1 -> registerCustomer();
+                    case 2 -> registerDeliveryPartner();
+                    case 3 -> login();
+                    case 4 -> {
                         System.out.println("Exiting application...");
                         return;
                     }

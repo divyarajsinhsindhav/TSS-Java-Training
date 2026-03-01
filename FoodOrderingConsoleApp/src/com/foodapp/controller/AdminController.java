@@ -58,22 +58,37 @@ public class AdminController {
         }
     }
 
-    private static final int ADD_ITEM = 1;
-    private static final int ADD_CATEGORY = 2;
-    private static final int MENU_BACK = 3;
+    private static final int SHOW_MENU = 1;
+    private static final int ADD_ITEM = 2;
+    private static final int ADD_CATEGORY = 3;
+    private static final int EDIT_ITEM = 4;
+    private static final int DELETE_ITEM = 5;
+//    private static final int EDIT_CATEGORY = 6;
+//    private static final int DELETE_CATEGORY = 7;
+    private static final int MENU_BACK = 6;
     private void manageMenu() {
 
         while (true) {
             System.out.println("\n--- Manage Menu ---");
-            System.out.println("1. Add Item");
-            System.out.println("2. Add Category");
-            System.out.println("3. Back");
+            System.out.println("1. Show current menu");
+            System.out.println("2. Add Item");
+            System.out.println("3. Add Category");
+            System.out.println("4. Update item");
+            System.out.println("5. Delete Item");
+//            System.out.println("6. Update Category");
+//            System.out.println("7. Delete Category");
+            System.out.println("6. Back");
 
             int choice = InputValidation.readIntInRange(scanner,
-                    "Enter your choice: ", ADD_ITEM, MENU_BACK);
+                    "Enter your choice: ", SHOW_MENU, MENU_BACK);
 
             switch (choice) {
+                case SHOW_MENU ->  menuController.displayMenu();
                 case ADD_ITEM -> addItemInMenu();
+                case EDIT_ITEM -> updateItem();
+                case DELETE_ITEM -> deleteItem();
+//                case EDIT_CATEGORY -> updateCategory();
+//                case DELETE_CATEGORY -> deleteCategory();
                 case ADD_CATEGORY -> addMenuCategory();
                 case MENU_BACK -> {
                     return;
@@ -212,23 +227,99 @@ public class AdminController {
 
             int foodItemId = IdGenerator.getNextItemID();
 
-            String itemName = InputValidation.readValidName(
-                    scanner, "Enter food item name: ");
+            String itemName;
+
+            while (true) {
+
+                itemName = InputValidation.readValidName(
+                        scanner, "Enter food item name: ");
+
+                FoodItem existingItem = menuService.findFoodItemByName(itemName);
+
+                if (existingItem == null) {
+                    break;
+                }
+
+                System.out.println("Food item '" + itemName + "' already exists!");
+            }
 
             double itemPrice = InputValidation.readPositiveDouble(
                     scanner, "Enter food item price: ");
 
             try {
                 menuService.addFoodItem(categoryId, foodItemId, itemName, itemPrice);
+                System.out.println("Food item '" + itemName + "' added successfully!");
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
 
-            System.out.println("Food item '" + itemName + "' added successfully!");
-
         } while (InputValidation.doUserWantToContinue(scanner,
                 "Do you want to add another item?"));
 
+    }
+
+    private void updateItem() {
+
+        System.out.println("\n========== Update Food Item ==========");
+
+        do {
+            menuService.displayMenu();
+
+            int itemId = InputValidation.readPositiveZeroInt(
+                    scanner, "Enter Food Item ID to update: ");
+
+            FoodItem item = menuService.findFoodItem(itemId);
+
+            if (item == null) {
+                System.out.println("Food item not found!");
+                return;
+            }
+
+            String newName;
+            while (true) {
+                newName = InputValidation.readValidName(
+                        scanner, "Enter new item name: ");
+
+                FoodItem existing = menuService.findFoodItemByName(newName);
+
+                if (existing == null || existing.getId() == itemId) {
+                    break;
+                }
+
+                System.out.println("Food item with this name already exists!");
+            }
+
+            double newPrice = InputValidation.readPositiveDouble(
+                    scanner, "Enter new price: ");
+
+            item.setName(newName);
+            item.setPrice(newPrice);
+
+            System.out.println("Food item updated successfully!");
+
+        } while (InputValidation.doUserWantToContinue(
+                scanner, "Do you want to update another item?"));
+    }
+
+    private void deleteItem() {
+
+        System.out.println("\n========== Delete Food Item ==========");
+
+        do {
+
+            menuService.displayMenu();
+
+            int itemId = InputValidation.readPositiveZeroInt(
+                    scanner, "Enter Food Item ID to delete: ");
+
+            try {
+                menuService.deleteItem(itemId);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+
+        } while (InputValidation.doUserWantToContinue(
+                scanner, "Do you want to delete another item?"));
     }
 
     private void setDiscountRate() {
