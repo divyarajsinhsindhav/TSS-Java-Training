@@ -7,43 +7,23 @@ public class MenuSeeder {
     }
 
     public static void seed(MenuService menuService) {
-
         // Root Categories
-        menuService.addCategory(0, 1, "Gujarati Thali");
-        menuService.addCategory(0, 2, "Gujarati Snacks");
-        menuService.addCategory(0, 3, "Street Food");
-        menuService.addCategory(0, 4, "Beverages");
-        menuService.addCategory(0, 5, "Sweets");
+        menuService.addCategory(0, 1, "Pizza");
+        menuService.addCategory(0, 2, "Snacks");
+        menuService.addCategory(0, 3, "Beverages");
 
-        // Gujarati Thali Items
-        menuService.addFoodItem(1, 1, "Kathiyawadi Thali", 220);
-        menuService.addFoodItem(1, 2, "Gujarati Thali", 200);
-        menuService.addFoodItem(1, 3, "Mini Gujarati Thali", 150);
+        // Pizza
+        menuService.addFoodItem(1, 1, "Margherita Pizza", 180);
+        menuService.addFoodItem(1, 2, "Farmhouse Pizza", 220);
+        menuService.addFoodItem(1, 3, "Veggie Delight Pizza", 240);
 
-        // Gujarati Snacks
-        menuService.addFoodItem(2, 4, "Khaman Dhokla", 60);
-        menuService.addFoodItem(2, 5, "Khandvi", 70);
-        menuService.addFoodItem(2, 6, "Patra", 80);
-        menuService.addFoodItem(2, 7, "Fafda", 90);
-        menuService.addFoodItem(2, 8, "Thepla", 50);
-
-        // Street Food
-        menuService.addFoodItem(3, 9, "Pav Bhaji", 120);
-        menuService.addFoodItem(3, 10, "Dabeli", 40);
-        menuService.addFoodItem(3, 11, "Sev Usal", 90);
-        menuService.addFoodItem(3, 12, "Vadapav", 35);
-        menuService.addFoodItem(3, 13, "Sev Khamani", 80);
+        // Snacks
+        menuService.addFoodItem(2, 4, "Garlic Bread", 120);
+        menuService.addFoodItem(2, 5, "Cheese Garlic Bread", 150);
+        menuService.addFoodItem(2, 6, "Veg Nuggets", 140);
 
         // Beverages
-        menuService.addFoodItem(4, 14, "Masala Chaas", 30);
-        menuService.addFoodItem(4, 15, "Sweet Lassi", 60);
-        menuService.addFoodItem(4, 16, "Mango Lassi", 80);
-        menuService.addFoodItem(4, 17, "Cold Coffee", 90);
-
-        // Sweets
-        menuService.addFoodItem(5, 18, "Basundi", 120);
-        menuService.addFoodItem(5, 19, "Shrikhand", 100);
-        menuService.addFoodItem(5, 20, "Mohanthal", 110);
-        menuService.addFoodItem(5, 21, "Jalebi", 80);
+        menuService.addFoodItem(3, 7, "Coke", 40);
+        menuService.addFoodItem(3, 8, "Cold Coffee", 90);
     }
 }

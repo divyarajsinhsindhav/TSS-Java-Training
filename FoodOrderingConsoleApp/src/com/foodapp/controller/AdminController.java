@@ -333,9 +333,8 @@ public class AdminController {
         } else {
             System.out.println("Current Discount Rate: " + currentRate + "%");
         }
-
-        int newRate = InputValidation.readPositiveInt(
-                scanner, "Enter new discount rate (%): ");
+        int newRate = InputValidation.readIntInRange(
+                scanner, "Enter new discount rate (%): ", 1, 100);
 
         discount.setDiscount(newRate);
 
@@ -362,7 +361,7 @@ public class AdminController {
         System.out.println("Discount will now apply on orders above " + newAmount + ".");
     }
 
-    private void setStatusOfDeliveryPartner() {
+    private void setStatusOfDeliveryPartner()  {
         System.out.println("\n--- Change Delivery Partner Status ---");
 
         List<DeliveryPartner> deliveryPartners = deliveryPartnerService.getDeliveryPartners();
@@ -386,7 +385,11 @@ public class AdminController {
 
         DeliveryPartner selectedPartner = null;
 
-        selectedPartner = deliveryPartnerService.getDeliveryPartnerById(id);
+        try {
+            selectedPartner = deliveryPartnerService.getDeliveryPartnerById(id);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
 
         if (selectedPartner == null) {
             System.out.println("Delivery Partner not found.");
@@ -413,7 +416,11 @@ public class AdminController {
                 ? DeliveryPartnerStatus.ACTIVE
                 : DeliveryPartnerStatus.INACTIVE;
 
-        deliveryPartnerService.changeDeliveryPartnerStatus(selectedPartner, newStatus);
+        try {
+            deliveryPartnerService.changeDeliveryPartnerStatus(selectedPartner, newStatus);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         System.out.println("Delivery Partner status updated successfully.");
     }
 

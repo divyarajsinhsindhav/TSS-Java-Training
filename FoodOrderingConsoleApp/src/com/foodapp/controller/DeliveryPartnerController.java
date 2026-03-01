@@ -13,10 +13,35 @@ public class DeliveryPartnerController {
 
     private DeliveryPartnerService deliveryPartnerService;
     private SessionManager sessionManager;
+    private Scanner scanner = new Scanner(System.in);
 
     public DeliveryPartnerController(DeliveryPartnerService deliveryPartnerService, SessionManager sessionManager) {
         this.deliveryPartnerService = deliveryPartnerService;
         this.sessionManager = sessionManager;
+    }
+
+    public void displayOption() {
+        while (sessionManager.isLoggedIn()) {
+            System.out.println("\n================ Delivery Partner Menu =========");
+            System.out.println("1. Order History");
+            System.out.println("2. Log out");
+            int choice = InputValidation.readIntInRange(scanner, "Enter your choice: ", 1, 2);
+            try {
+                switch (choice) {
+                    case 1 -> getDeliveryPartnersOrder();
+                    case 2 -> logout();
+                }
+            } catch (Exception e) {
+                System.out.println("Error in getting delivery partner data");
+            }
+        }
+    }
+
+    private void logout() {
+
+        sessionManager.logout();
+
+        System.out.println("Logged out successfully.");
     }
 
     public void getDeliveryPartnersOrder() {
