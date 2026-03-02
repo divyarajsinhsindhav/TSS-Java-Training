@@ -442,3 +442,7 @@ Main --> DeliveryPartnerController
 ```
 
 ## Flow of the application
+
+### Admin Credential
+ - admin@food.com
+ - Admin123
