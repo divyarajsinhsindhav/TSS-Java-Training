@@ -22,6 +22,7 @@ public class AuthController {
     }
 
     public User registerUser(UserType role) {
+
         String name = InputValidation.readValidName(scanner, "Enter your name: ");
 
         String email;

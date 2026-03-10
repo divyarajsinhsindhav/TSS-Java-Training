@@ -11,6 +11,7 @@ public class Order {
     private PaymentMode mode;
     private DeliveryPartner deliveryPartner;
     private double finalAmount;
+    private OrderStatus orderStatus;
 
     public Order(int id, List<OrderItem> orderItems, User customer,
                  double total, double discountRate, PaymentMode mode,
@@ -22,6 +23,7 @@ public class Order {
         this.discountRate = discountRate;
         this.mode = mode;
         this.finalAmount = finalAmount;
+        this.orderStatus = OrderStatus.PENDING;
     }
 
     public int getId() {
@@ -62,6 +64,14 @@ public class Order {
 
     public void setDeliveryPartner(DeliveryPartner deliveryPartner) {
         this.deliveryPartner = deliveryPartner;
+    }
+
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
     }
 
     @Override

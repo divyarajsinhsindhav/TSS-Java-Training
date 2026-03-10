@@ -3,6 +3,7 @@ package com.foodapp.service;
 import com.foodapp.model.DeliveryPartner;
 import com.foodapp.model.DeliveryPartnerStatus;
 import com.foodapp.model.Order;
+import com.foodapp.model.OrderStatus;
 import com.foodapp.repository.InMemoryOrderRepository;
 import com.foodapp.repository.UserRepository;
 
@@ -116,5 +117,12 @@ public class DeliveryPartnerService {
             throw new IllegalArgumentException("DeliveryPartner cannot be null");
         }
         deliveryPartner.setStatus(status);
+    }
+
+    public void orderDelivered(Order order) {
+        if (order == null) {
+            throw new IllegalArgumentException("Order cannot be null");
+        }
+        order.setOrderStatus(OrderStatus.DELIVERED);
     }
 }

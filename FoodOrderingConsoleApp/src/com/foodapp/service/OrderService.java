@@ -68,12 +68,12 @@ public class OrderService {
         return order;
     }
 
-    private double calculateTotal(List<OrderItem> Cart) {
-        return 0;
-    }
+    public void outForDelivery(Order order) {
+        if (order == null) {
+            throw new IllegalArgumentException("Order is null");
+        }
 
-    private double calculateFinalAmount(List<OrderItem> Cart) {
-        return 0;
+        order.setOrderStatus(OrderStatus.OUT_OF_DELIVERY);
     }
 
     public List<Order> getOrdersByCustomer(User customer) {

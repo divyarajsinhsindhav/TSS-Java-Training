@@ -1,8 +1,6 @@
 package com.foodapp.service;
 
-import com.foodapp.model.Admin;
-import com.foodapp.model.Discount;
-import com.foodapp.model.FlatDiscount;
+import com.foodapp.model.*;
 import com.foodapp.repository.UserRepository;
 
 public class AdminService {
@@ -21,5 +19,13 @@ public class AdminService {
                 .filter(admin -> admin.getEmail().equals(email))
                 .findFirst()
                 .orElse(null);
+    }
+
+    public void confirmOrder(Order order) {
+        if (order == null) {
+            throw new IllegalArgumentException("Order is null");
+        }
+
+        order.setOrderStatus(OrderStatus.CONFIRM);
     }
 }

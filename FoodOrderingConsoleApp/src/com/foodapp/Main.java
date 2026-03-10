@@ -140,7 +140,6 @@ public class Main {
     }
 
     private static void deliveryPartner() {
-
         deliveryPartnerController.displayOption();
     }
 }

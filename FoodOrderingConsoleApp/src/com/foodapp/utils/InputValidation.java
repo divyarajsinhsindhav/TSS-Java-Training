@@ -91,6 +91,7 @@ public class InputValidation {
     public static String readValidEmail(Scanner sc, String message) {
         while (true) {
             System.out.print(message);
+
             String email = sc.nextLine().trim();
 
             if (EMAIL_PATTERN.matcher(email).matches()) {
